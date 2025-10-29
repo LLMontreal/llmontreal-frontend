@@ -38,24 +38,39 @@
       }
     }
 
-    .social-icons {
-      display: flex;
-      gap: 1rem;
+ .footer-brand-social {
+  display: flex;
+  align-items: center;
+  gap: 3.5rem; 
 
-      a {
-        font-size: 1.25rem;
-        color: var(--color-text-light);
-        transition: color 0.2s ease;
+  .montreal-logo {
+    width: 200px;
+    height: auto;
+    transition: opacity 0.3s ease;
 
-        &:hover {
-          color: var(--color-primary);
-        }
-
-        body.dark & {
-          color: var(--color-text-dark);
-        }
-      }
+    &:hover {
+      color: var(--color-primary);
     }
+
+    body.dark & {
+      color: var(--color-text-dark);
+    }
+  }
+
+  .linkedin-icon {
+    font-size: 1.5rem;
+    color: var(--color-text-light);
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--color-primary);
+    }
+
+    body.dark & {
+      color: var(--color-text-dark);
+    }
+  }
+}
 
     .copyright {
       font-size: 0.875rem;
