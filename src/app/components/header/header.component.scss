@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
+
+$primary-blue: #4A90E2;
+$primary-blue-light: #eaf2ff;
+$border-light: #dbe0e6;
+$border-dark: #2a3b4c;
+$text-dark: #333333;
+$text-light: #f8f9fa;
+$bg-light: #ffffff;
+$bg-dark: #101922;
+
+:host {
+  display: block;
+  width: 100%;
+  background-color: $bg-light;
+  border-bottom: 1px solid $border-light;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: 'Poppins', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:host-context(body.dark) {
+  background-color: $bg-dark;
+  border-bottom-color: $border-dark;
+
+  .brand-name {
+    color: $text-light;
+  }
+
+  a {
+    color: $border-dark;
+
+    &.active-link {
+      color: $primary-blue;
+      background-color: rgba($primary-blue, 0.15);
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+}
+
+.main-header {
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  background-color: inherit;
+  border-bottom: inherit;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+
+.brand-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $text-dark;
+  font-family: 'Poppins', sans-serif;
+  transition: color 0.3s ease;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  a {
+    padding: 8px 12px;
+    text-decoration: none;
+    color: $text-dark;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: background-color 0.25s, color 0.25s;
+
+    &:hover {
+      background-color: $primary-blue-light;
+    }
+
+    &.active-link {
+      color: $primary-blue;
+      background-color: $primary-blue-light;
+    }
+  }
+}
