@@ -40,7 +40,8 @@
 
     .footer-brand-social {
       display: flex;
-      flex-direction: center;
+      flex-direction: row;
+      justify-content: center;
       align-items: center;
 
       .montreal-logo {
@@ -48,17 +49,18 @@
         width: 100%;
         height: auto;
         margin-top: 1.5rem;
-
+        color: var(--color-text-light);
+        transition: color 0.3s ease;
       }
     }
+  }
 
-    &:hover {
-      color: var(--color-primary);
-    }
+  &:hover {
+    color: var(--color-primary);
+  }
 
-    body.dark & {
-      color: var(--color-text-dark);
-    }
+  body.dark & {
+    color: var(--color-text-dark);
   }
 
   .linkedin-icon {
@@ -79,7 +81,6 @@
 .copyright {
   font-size: 0.875rem;
   color: var(--color-text-light);
-
 
   body.dark & {
     color: var(--color-text-dark);
