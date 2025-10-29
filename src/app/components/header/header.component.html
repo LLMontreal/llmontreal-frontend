@@ -23,4 +23,7 @@
         </div>
       </label>
     </div>
+      <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Ativar modo claro' : 'Ativar modo escuro'">
+      <i class="fas" [ngClass]="isDark ? 'fa-sun' : 'fa-moon'"></i>
+    </button>
 </header>

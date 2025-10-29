@@ -102,3 +102,7 @@ body.dark footer {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+//LOGO MONTREAL MODO ESCURO
+body.dark .montreal-logo {
+  filter: brightness(0) invert(1);
+}
