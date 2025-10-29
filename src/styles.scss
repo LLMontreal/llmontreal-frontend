@@ -1,7 +1,104 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+// PALETA
+:root {
+  --color-primary: #4A90E2;
+  --color-success: #50E3C2;
+  --color-error: #D0021B;
+
+  --color-background-light: #F8F9FA;
+  --color-background-dark: #101922;
+
+  --color-text-light: #333333;
+  --color-text-dark: #F8F9FA;
+
+  --color-border-light: #dbe0e6;
+  --color-border-dark: #2a3b4c;
+
+  --radius-default: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+
+  --font-family-display: 'Inter', sans-serif;
+}
+
+// MODO ESCURO
+.dark {
+  --color-background-light: var(--color-background-dark);
+  --color-text-light: var(--color-text-dark);
+  --color-border-light: var(--color-border-dark);
+}
+
+// BASE GLOBAL
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-display);
+  background-color: var(--color-background-light);
+  color: var(--color-text-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark {
+  background-color: var(--color-background-dark);
+  color: var(--color-text-dark);
+}
+
+// TIPOGRAFIA
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0.5em 0;
+}
+
+p {
+  line-height: 1.6;
+  margin: 0.5em 0;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: rgba(74, 144, 226, 0.85);
+}
+
+// CONTAINERS
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+// CABEÇALHO E RODAPÉ
+header, footer {
+  border-color: var(--color-border-light);
+  border-style: solid;
+  border-width: 0 0 1px;
+  padding: 1rem 2rem;
+}
+
+body.dark header,
+body.dark footer {
+  border-color: var(--color-border-dark);
+}
+
+// TRANSIÇÃO DE TEMA
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
