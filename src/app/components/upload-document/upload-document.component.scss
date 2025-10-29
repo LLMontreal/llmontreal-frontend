@@ -1,0 +1,49 @@
+.upload-container {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.upload-area {
+  border: 2px dashed #ccc;
+  padding: 40px;
+  margin: 20px 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.upload-area.dragging {
+  background-color: #f0f8ff;
+}
+
+.upload-icon {
+  font-size: 40px;
+  color: #007bff;
+}
+
+.file-info {
+  margin-bottom: 15px;
+}
+
+button {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.progress-container {
+  background-color: #eee;
+  height: 10px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 10px;
+  background-color: #007bff;
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.upload-success { color: green; margin-top: 10px; }
+.upload-error { color: red; margin-top: 10px; }
+.upload-cancelled { color: orange; margin-top: 10px; }
