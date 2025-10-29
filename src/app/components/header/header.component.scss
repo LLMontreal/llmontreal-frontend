@@ -1,61 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
-
-$primary-blue: #4A90E2;
-$primary-blue-light: #eaf2ff;
-$border-light: #dbe0e6;
-$border-dark: #2a3b4c;
-$text-dark: #333333;
-$text-light: #f8f9fa;
-$bg-light: #ffffff;
-$bg-dark: #101922;
-
-:host {
-  display: block;
-  width: 100%;
-  background-color: $bg-light;
-  border-bottom: 1px solid $border-light;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  font-family: 'Poppins', sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-:host-context(body.dark) {
-  background-color: $bg-dark;
-  border-bottom-color: $border-dark;
-
-  .brand-name {
-    color: $text-light;
-  }
-
-  a {
-    color: $border-dark;
-
-    &.active-link {
-      color: $primary-blue;
-      background-color: rgba($primary-blue, 0.15);
-    }
-
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-  }
-}
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap");
 
 .main-header {
   padding: 12px 24px;
   display: flex;
   align-items: center;
-  background-color: inherit;
-  border-bottom: inherit;
-}
-
-.header-container {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
   width: 100%;
+  background-color: var(--color-background-light);
+  border-bottom: 1px solid var(--color-border-light);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: "Poppins", sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark .main-header {
+  background-color: var(--color-background-dark);
+  border-bottom-color: var(--color-border-dark);
 }
 
 .logo {
@@ -74,9 +36,13 @@ $bg-dark: #101922;
 .brand-name {
   font-size: 1.25rem;
   font-weight: 600;
-  color: $text-dark;
-  font-family: 'Poppins', sans-serif;
+  color: var(--color-text-light);
+  font-family: "Poppins", sans-serif;
   transition: color 0.3s ease;
+}
+
+body.dark .brand-name {
+  color: var(--color-text-dark);
 }
 
 .header-nav {
@@ -87,18 +53,36 @@ $bg-dark: #101922;
   a {
     padding: 8px 12px;
     text-decoration: none;
-    color: $text-dark;
+    color: var(--color-text-light);
     font-weight: 500;
-    border-radius: 6px;
+    border-radius: var(--radius-lg);
     transition: background-color 0.25s, color 0.25s;
 
     &:hover {
-      background-color: $primary-blue-light;
+      background-color: rgba(
+        74,
+        144,
+        226,
+        0.15
+      ); /* similar ao primary-blue-light */
     }
 
     &.active-link {
-      color: $primary-blue;
-      background-color: $primary-blue-light;
+      color: var(--color-primary);
+      background-color: rgba(74, 144, 226, 0.15);
     }
+  }
+}
+
+body.dark .header-nav a {
+  color: var(--color-text-dark);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  &.active-link {
+    color: var(--color-primary);
+    background-color: rgba(74, 144, 226, 0.15);
   }
 }
