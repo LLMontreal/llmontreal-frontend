@@ -15,7 +15,7 @@
   .footer-container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     align-items: center;
 
     .footer-links {
@@ -38,15 +38,19 @@
       }
     }
 
- .footer-brand-social {
-  display: flex;
-  align-items: center;
-  gap: 3.5rem; 
+    .footer-brand-social {
+      display: flex;
+      flex-direction: center;
+      align-items: center;
 
-  .montreal-logo {
-    width: 200px;
-    height: auto;
-    transition: opacity 0.3s ease;
+      .montreal-logo {
+        max-width: 200px;
+        width: 100%;
+        height: auto;
+        margin-top: 1.5rem;
+
+      }
+    }
 
     &:hover {
       color: var(--color-primary);
@@ -72,13 +76,12 @@
   }
 }
 
-    .copyright {
-      font-size: 0.875rem;
-      color: var(--color-text-light);
+.copyright {
+  font-size: 0.875rem;
+  color: var(--color-text-light);
 
-      body.dark & {
-        color: var(--color-text-dark);
-      }
-    }
+
+  body.dark & {
+    color: var(--color-text-dark);
   }
 }
