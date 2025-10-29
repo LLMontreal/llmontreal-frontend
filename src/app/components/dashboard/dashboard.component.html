@@ -1,0 +1,85 @@
+<main class="flex-1 px-4 sm:px-6 lg:px-8 py-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+      <h1 class="text-3xl font-extrabold tracking-tight">Dashboard de Documentos</h1>
+      <button class="flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold gap-2 hover:bg-primary/90 transition-colors" (click)="onUpload()">
+        <mat-icon>upload_file</mat-icon>
+        <span class="truncate">Enviar Novo Documento</span>
+      </button>
+    </div>
+    <div class="flex flex-wrap gap-3 mb-6">
+      <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary px-4" [class]="selectedFilter === 'Todos' ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors'" (click)="onFilterChange('Todos')">
+        <p class="text-sm font-medium">Todos</p>
+      </button>
+      <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700 px-4 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" [class]="selectedFilter === 'Processando' ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors'" (click)="onFilterChange('Processando')">
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Processando</p>
+      </button>
+      <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700 px-4 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" [class]="selectedFilter === 'Pronto' ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors'" (click)="onFilterChange('Pronto')">
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Pronto</p>
+      </button>
+      <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700 px-4 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" [class]="selectedFilter === 'Erro' ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors'" (click)="onFilterChange('Erro')">
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Erro</p>
+      </button>
+    </div>
+    <div class="overflow-hidden rounded-xl border border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-background-dark">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-gray-50 dark:bg-gray-800/50">
+              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">Nome do Arquivo</th>
+              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">Tipo</th>
+              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">Data de Upload</th>
+              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-[#DEE2E6] dark:border-gray-700" *ngFor="let document of documents">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center gap-2">
+                <mat-icon [class]="document.icon === 'picture_as_pdf' ? 'text-red-500' : document.icon === 'description' ? 'text-blue-500' : 'text-orange-500'">{{ document.icon }}</mat-icon>
+                {{ document.name }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ document.type }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ document.uploadDate }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="getStatusColor(document.status)">{{ document.status }}</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <a class="text-primary hover:text-primary/80" href="#" (click)="onViewDetails(document)">Ver Detalhes</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="flex items-center justify-center p-4 mt-4">
+      <a class="flex size-10 items-center justify-center text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary" href="#">
+        <mat-icon>chevron_left</mat-icon>
+      </a>
+      <a class="text-sm font-bold leading-normal flex size-10 items-center justify-center text-white rounded-full bg-primary" href="#">1</a>
+      <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" href="#">2</a>
+      <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" href="#">3</a>
+      <span class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-700 dark:text-gray-300 rounded-full" href="#">...</span>
+      <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" href="#">10</a>
+      <a class="flex size-10 items-center justify-center text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary" href="#">
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+    <!-- Empty State Example -->
+    <!--
+                <div class="text-center py-20 bg-white dark:bg-background-dark rounded-xl border border-[#DEE2E6] dark:border-gray-700 mt-6">
+                    <div class="inline-block bg-primary/10 p-4 rounded-full">
+                        <span class="material-symbols-outlined text-5xl text-primary">folder_off</span>
+                    </div>
+                    <h3 class="mt-4 text-lg font-semibold">Nenhum documento encontrado</h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Comece enviando seu primeiro documento para análise.</p>
+                    <div class="mt-6">
+                        <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold gap-2 mx-auto hover:bg-primary/90 transition-colors">
+                            <span class="material-symbols-outlined">upload_file</span>
+                            <span class="truncate">Enviar seu primeiro documento</span>
+                        </button>
+                    </div>
+                </div>
+                -->
+  </div>
+</main>
