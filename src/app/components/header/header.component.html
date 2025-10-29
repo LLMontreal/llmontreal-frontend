@@ -5,4 +5,22 @@
       <span class="brand-name">LLMontreal</span>
     </a>
   </div>
+
+    <div class="hidden md:flex items-center gap-6">
+      <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" routerLink="/">Upload de Documento</a>
+      <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" routerLink="/dashboard">DashBoard</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <label *ngIf="showSearch" class="hidden sm:flex flex-col min-w-40 max-w-64">
+        <div class="flex w-full flex-1 items-stretch rounded-lg h-10">
+          <div class="text-gray-500 flex bg-gray-100 dark:bg-gray-800 items-center justify-center pl-3 rounded-l-lg border-r-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <circle cx="11" cy="11" r="7"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-gray-200 focus:outline-0 focus:ring-0 border-none bg-gray-100 dark:bg-gray-800 h-full placeholder:text-gray-500 px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Pesquisar..." value=""/>
+        </div>
+      </label>
+    </div>
 </header>
