@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DocumentDTO, DocumentStatus } from '../../models/document.model';
 import { DocumentService } from '../../services/document.service';
+import { SearchService } from '../../services/search.service';
+import { Subscription } from 'rxjs';
 
 interface UiDocument {
   name: string;
@@ -23,15 +25,27 @@ export class DashboardComponent implements OnInit {
   selectedFilter: string = 'Todos';
 
   documents: UiDocument[] = [];
+  private documentsAll: UiDocument[] = [];
+  private searchTerm = '';
+  private searchSub?: Subscription;
   loading = false;
   page = 0;
   size = 10;
   totalElements = 0;
 
-  constructor(private documentService: DocumentService) {}
+  constructor(private documentService: DocumentService, private searchService: SearchService) {}
 
   ngOnInit(): void {
     this.fetchDocuments();
+    // subscribe to search term changes from header
+    this.searchSub = this.searchService.getTerm().subscribe(term => {
+      this.searchTerm = (term || '').trim().toLowerCase();
+      this.applyFilters();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSub?.unsubscribe();
   }
 
   private mapStatusToLabel(status: DocumentStatus | string): UiDocument['status'] {
@@ -73,8 +87,9 @@ export class DashboardComponent implements OnInit {
     const status = this.selectedFilter === 'Todos' ? null : this.filterToStatus(this.selectedFilter);
     this.documentService.getDocuments(this.page, this.size, status).subscribe({
       next: (page) => {
-        this.documents = page.content.map(d => this.dtoToUi(d));
+        this.documentsAll = page.content.map(d => this.dtoToUi(d));
         this.totalElements = page.totalElements;
+        this.applyFilters();
         this.loading = false;
       },
       error: (err) => {
@@ -89,6 +104,18 @@ export class DashboardComponent implements OnInit {
     this.selectedFilter = filter;
     this.page = 0;
     this.fetchDocuments();
+  }
+
+  private applyFilters() {
+    // start from the fetched page content
+    let items = [...this.documentsAll];
+
+    // apply client-side search filter on name
+    if (this.searchTerm) {
+      items = items.filter(d => (d.name || '').toLowerCase().includes(this.searchTerm));
+    }
+
+    this.documents = items;
   }
 
   onUpload() {
