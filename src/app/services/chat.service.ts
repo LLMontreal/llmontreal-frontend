@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { ChatMessage } from '../../features/document-analysis/models/chat-message';
+import { ChatMessage } from '@shared/models/chat-message';
 
 @Injectable({
   providedIn: 'root'
