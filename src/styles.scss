@@ -35,21 +35,19 @@
 /* Responsive system: breakpoints and spacing scale */
 :root {
   /* Breakpoints (mobile-first) */
-  --bp-sm: 640px;   /* small / sm */
-  --bp-md: 768px;   /* medium / md */
-  --bp-lg: 1024px;  /* large / lg */
-  --bp-xl: 1280px;  /* xlarge / xl */
+  --bp-sm: 640px;   
+  --bp-md: 768px;   
+  --bp-lg: 1024px;  
+  --bp-xl: 1280px;  
 
-  /* Spacing scale (rem) */
   --space-0: 0rem;
-  --space-1: 0.25rem; /* 4px */
-  --space-2: 0.5rem;  /* 8px */
-  --space-3: 0.75rem; /* 12px */
-  --space-4: 1rem;    /* 16px */
-  --space-5: 1.5rem;  /* 24px */
-  --space-6: 2rem;    /* 32px */
+  --space-1: 0.25rem; 
+  --space-2: 0.5rem;  
+  --space-3: 0.75rem; 
+  --space-4: 1rem;    
+  --space-5: 1.5rem;  
+  --space-6: 2rem;    
 
-  /* Default gap used by helpers */
   --gap-default: var(--space-4);
 }
 
@@ -318,7 +316,6 @@ body.dark .status-default { background: #111827; color: #9ca3af; }
   padding-top: 0.25rem;
 }
 
-/* small responsive spacing to match the layout */
 @media (max-width: 640px) {
   .app-paginator { justify-content: center; }
 }
@@ -326,3 +323,6 @@ body.dark .status-default { background: #111827; color: #9ca3af; }
 .app-paginator .mat-mdc-paginator-range-actions {
   display: none !important;
 }
+
+
+
