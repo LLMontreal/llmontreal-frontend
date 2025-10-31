@@ -20,12 +20,14 @@
       <div *ngFor="let message of messages" class="message-wrapper"
         [ngClass]="message.sender === 'Você' ? 'user' : 'ia'">
         <ng-container *ngIf="message.sender === 'IA'">
-          <div class="message">
+          <div class="message-container">
             <div class="sender">{{ message.sender }}</div>
-            <div class="text">{{ message.text }}</div>
-            <div *ngIf="message.citation" class="citation">
-              <strong>Citações:</strong>
-              <p>"{{ message.citation }}"</p>
+            <div class="message">
+              <div class="text">{{ message.text }}</div>
+              <div *ngIf="message.citation" class="citation">
+                <strong>Citações:</strong>
+                <p>"{{ message.citation }}"</p>
+              </div>
             </div>
           </div>
         </ng-container>
@@ -40,10 +42,12 @@
 
       </div>
       <div *ngIf="isLoading" class="message-wrapper ia">
-        <div class="message">
+        <div class="message-container">
           <div class="sender">IA</div>
-          <div class="text typing-indicator">
-            <span></span><span></span><span></span>
+          <div class="message">
+            <div class="text typing-indicator">
+              <span></span><span></span><span></span>
+            </div>
           </div>
         </div>
       </div>

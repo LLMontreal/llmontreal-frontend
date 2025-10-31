@@ -9,7 +9,7 @@
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  border: 1px solid #eee;
+  border: 1px solid, var(--color-text-light,--color-text-dark);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   padding: 20px 24px;
@@ -27,14 +27,15 @@
   min-width: 1100px;
   margin: 0 auto;
   border-radius: 8px;
+  border: 1px solid, var(--color-text-light,--color-text-dark);
   padding: 16px 16px 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   max-height: calc(65vh - 200px);
   min-height: 280px;
   overflow: hidden;
+  margin-top: 15px;
 
 
   h3 {
@@ -107,17 +108,19 @@
 
 .message-wrapper {
   &.ia .message {
-    border: 1px solid #eee;
+    background: #d3dbe7; /* slightly darker for light mode */
+    border: 1px solid #d5dde8;
+    color: #111827;
     border-bottom-left-radius: 4px;
   }
 
   &.user {
     .message {
       background: var(--color-primary);
-
       border-radius: 18px 18px 4px 18px;
       border: 1px solid transparent;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      color: var(--color-text-dark);
     }
 
     .sender {
@@ -126,6 +129,11 @@
       padding-right: 4px;
     }
   }
+}
+
+.message-wrapper.ia .sender {
+  color: #555;
+  margin-bottom: 6px;
 }
 
 .citation {
@@ -161,6 +169,7 @@
     padding: 10px 15px;
     font-size: 1rem;
     background-color: var(--color-background-light, --color-background-dark);
+    color: var(--color-text-light, --color-text-dark);
   }
 
   button {
@@ -189,13 +198,21 @@
 }
 
 .typing-indicator span {
-  height: 8px;
-  width: 8px;
+  height: 5px;
+  width: 5px;
   background: #9E9E9E;
-  border-radius: 50%;
+  border-radius: 3px;
   display: inline-block;
   animation: bounce 1.4s infinite ease-in-out both;
 }
+
+.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+}
+
 
 @keyframes bounce {
 
@@ -207,5 +224,21 @@
 
   40% {
     transform: scale(1);
+  }
+}
+
+:host-context(.dark) {
+  .message-wrapper.ia .message {
+    background: #1a2534;
+    border: 1px solid #223146;
+    color: var(--color-text-dark, #F8F9FA);
+  }
+
+  .message-wrapper.ia .sender {
+    color: #bcd6ff;
+  }
+
+  .message-wrapper.user .sender {
+    color: #d2e2ff;
   }
 }
