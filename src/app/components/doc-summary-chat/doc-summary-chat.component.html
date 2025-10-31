@@ -1,26 +1,24 @@
 <div class="page-container">
   <h1 class="main-title">Resumo e Análise do Documento</h1>
 
-  <!-- SUMMARY (conteúdo antes separado) -->
+  <!-- SUMMARY-->
   <section class="summary">
     <h2>Resumo gerado por IA</h2>
     <p>
-      Este documento apresenta uma análise detalhada sobre o uso da inteligência artificial na automação de tarefas. 
-      São explorados seus benefícios, desafios e impactos nas áreas produtivas e criativas. 
-      O texto combina exemplos práticos e reflexões teóricas para ilustrar o potencial da tecnologia. 
+      Este documento apresenta uma análise detalhada sobre o uso da inteligência artificial na automação de tarefas.
+      São explorados seus benefícios, desafios e impactos nas áreas produtivas e criativas.
+      O texto combina exemplos práticos e reflexões teóricas para ilustrar o potencial da tecnologia.
       Conclui destacando a importância da ética e do uso responsável da IA.
     </p>
   </section>
 
-  <!-- CHAT (conteúdo anteriormente no ChatComponent) -->
+  <!-- CHAT-->
   <section class="chat-card">
     <h3>Pergunte sobre o Documento</h3>
 
     <div class="chat-messages" #messagesContainer>
-      <!-- Loop principal para renderizar cada mensagem -->
-      <div *ngFor="let message of messages" class="message-wrapper" [ngClass]="message.sender === 'Você' ? 'user' : 'ia'">
-
-        <!-- Template para as mensagens da IA -->
+      <div *ngFor="let message of messages" class="message-wrapper"
+        [ngClass]="message.sender === 'Você' ? 'user' : 'ia'">
         <ng-container *ngIf="message.sender === 'IA'">
           <div class="message">
             <div class="sender">{{ message.sender }}</div>
@@ -31,8 +29,6 @@
             </div>
           </div>
         </ng-container>
-
-        <!-- Template para as mensagens do Usuário -->
         <ng-container *ngIf="message.sender === 'Você'">
           <div class="message-container">
             <div class="sender">{{ message.sender }}</div>
@@ -43,8 +39,6 @@
         </ng-container>
 
       </div>
-
-      <!-- Indicador de "digitando..." -->
       <div *ngIf="isLoading" class="message-wrapper ia">
         <div class="message">
           <div class="sender">IA</div>
@@ -54,17 +48,10 @@
         </div>
       </div>
     </div>
-
-    <!-- Área de input de mensagem -->
     <div class="chat-input">
       <form (ngSubmit)="sendMessage()">
-        <input
-          type="text"
-          [(ngModel)]="newMessage"
-          name="newMessage"
-          placeholder="Digite sua pergunta aqui..."
-          autocomplete="off"
-        />
+        <input type="text" [(ngModel)]="newMessage" name="newMessage" placeholder="Digite sua pergunta aqui..."
+          autocomplete="off" />
         <button type="submit" [disabled]="!newMessage || isLoading">
           <mat-icon>sendrounded</mat-icon>
         </button>
