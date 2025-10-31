@@ -4,9 +4,10 @@ import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ThemeService } from '../../services/theme.service';
-import { SearchService } from '../../services/search.service';
 import { MatIconModule } from '@angular/material/icon'; 
 import { MatButtonModule } from '@angular/material/button'; 
+
+
 
 
 @Component({
@@ -23,8 +24,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private themeService = inject(ThemeService);
   isDark = false;
-  private searchService = inject(SearchService);
-
   constructor() {
     effect(() => {
       this.isDark = this.themeService.theme() === 'dark';
@@ -44,8 +43,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  onSearch(value: string) {
-    this.searchService.setTerm(value || '');
+ onSearch(value: string): void {
+    console.log('search:', value);
   }
 
   private updateShowSearch(url: string): void {

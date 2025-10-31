@@ -19,13 +19,17 @@ export class DocumentService {
    * @param size O tamanho da página
    * @param status O status para filtrar (opcional)
    */
-  getDocuments(page: number, size: number, status?: DocumentStatus | null): Observable<Page<DocumentDTO>> {
+  getDocuments(page: number, size: number, status?: DocumentStatus | null, q?: string): Observable<Page<DocumentDTO>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
 
     if (status) {
       params = params.set('status', status);
+    }
+
+    if (q) {
+      params = params.set('q', q);
     }
 
     return this.http.get<Page<DocumentDTO>>(this.apiUrl, { params }).pipe(

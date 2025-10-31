@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DocumentDTO, DocumentStatus } from '../../models/document.model';
 import { DocumentService } from '../../services/document.service';
-import { SearchService } from '../../services/search.service';
-import { Subscription } from 'rxjs';
 
 interface UiDocument {
   name: string;
@@ -17,35 +16,23 @@ interface UiDocument {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, MatPaginatorModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  selectedFilter: string = 'Todos';
+  selectedFilter = 'Todos';
 
   documents: UiDocument[] = [];
-  private documentsAll: UiDocument[] = [];
-  private searchTerm = '';
-  private searchSub?: Subscription;
   loading = false;
   page = 0;
   size = 10;
   totalElements = 0;
 
-  constructor(private documentService: DocumentService, private searchService: SearchService) {}
+  constructor(private documentService: DocumentService) {}
 
   ngOnInit(): void {
     this.fetchDocuments();
-    // subscribe to search term changes from header
-    this.searchSub = this.searchService.getTerm().subscribe(term => {
-      this.searchTerm = (term || '').trim().toLowerCase();
-      this.applyFilters();
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.searchSub?.unsubscribe();
   }
 
   private mapStatusToLabel(status: DocumentStatus | string): UiDocument['status'] {
@@ -57,9 +44,7 @@ export class DashboardComponent implements OnInit {
       case DocumentStatus.FAILED:
         return 'Erro';
       case DocumentStatus.PENDING:
-        return 'Pendente';
       default:
-        // in case backend sends localized or unknown values, treat as pending
         return 'Pendente';
     }
   }
@@ -87,9 +72,8 @@ export class DashboardComponent implements OnInit {
     const status = this.selectedFilter === 'Todos' ? null : this.filterToStatus(this.selectedFilter);
     this.documentService.getDocuments(this.page, this.size, status).subscribe({
       next: (page) => {
-        this.documentsAll = page.content.map(d => this.dtoToUi(d));
+        this.documents = page.content.map(d => this.dtoToUi(d));
         this.totalElements = page.totalElements;
-        this.applyFilters();
         this.loading = false;
       },
       error: (err) => {
@@ -106,24 +90,10 @@ export class DashboardComponent implements OnInit {
     this.fetchDocuments();
   }
 
-  private applyFilters() {
-    // start from the fetched page content
-    let items = [...this.documentsAll];
-
-    // apply client-side search filter on name
-    if (this.searchTerm) {
-      items = items.filter(d => (d.name || '').toLowerCase().includes(this.searchTerm));
-    }
-
-    this.documents = items;
-  }
-
   onUpload() {
-    // routing handled by navbar; keep placeholder if you want to open a dialog
   }
 
   onViewDetails(document: UiDocument) {
-    // TODO: implement navigation to details page if exists
   }
 
   private filterToStatus(filter: string): DocumentStatus | null {
@@ -140,16 +110,22 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  getStatusColor(status: string): string {
+  getStatusClass(status: string): string {
     switch (status) {
       case 'Pronto':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+        return 'status-badge status-pronto';
       case 'Processando':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+        return 'status-badge status-processando';
       case 'Erro':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+        return 'status-badge status-erro';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+        return 'status-badge status-default';
     }
+  }
+
+  onPageChange(event: PageEvent) {
+    this.page = event.pageIndex;
+    this.size = event.pageSize;
+    this.fetchDocuments();
   }
 }

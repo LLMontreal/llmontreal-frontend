@@ -10,46 +10,48 @@
       </button>
     </div>
     
-    <div class="flex flex-wrap gap-3 mb-6">
-      <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary px-4" [class]="selectedFilter === 'Todos' ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors'" (click)="onFilterChange('Todos')">
-        <p class="text-sm font-medium">Todos</p>
-      </button>
-      <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700 px-4 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" [class]="selectedFilter === 'Processando' ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors'" (click)="onFilterChange('Processando')">
-        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Processando</p>
-      </button>
-      <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700 px-4 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" [class]="selectedFilter === 'Pronto' ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors'" (click)="onFilterChange('Pronto')">
-        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Pronto</p>
-      </button>
-      <button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700 px-4 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" [class]="selectedFilter === 'Erro' ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors'" (click)="onFilterChange('Erro')">
-        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Erro</p>
-      </button>
-    </div>
+      <div class="dash-actions mb-6">
+        <button class="btn-filter" [ngClass]="selectedFilter === 'Todos' ? 'btn-filter--active' : 'btn-filter--inactive'" (click)="onFilterChange('Todos')">
+          <p class="text-sm font-medium">Todos</p>
+        </button>
+        <button class="btn-filter" [ngClass]="selectedFilter === 'Processando' ? 'btn-filter--active' : 'btn-filter--inactive'" (click)="onFilterChange('Processando')">
+          <p class="text-sm font-medium">Processando</p>
+        </button>
+        <button class="btn-filter" [ngClass]="selectedFilter === 'Pronto' ? 'btn-filter--active' : 'btn-filter--inactive'" (click)="onFilterChange('Pronto')">
+          <p class="text-sm font-medium">Pronto</p>
+        </button>
+        <button class="btn-filter" [ngClass]="selectedFilter === 'Erro' ? 'btn-filter--active' : 'btn-filter--inactive'" (click)="onFilterChange('Erro')">
+          <p class="text-sm font-medium">Erro</p>
+        </button>
+      </div>
 
-    <div class="overflow-hidden rounded-xl border border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800">
+    <div class="table-root">
       <div class="overflow-x-auto">
-        <table class="w-full">
+        <table class="table">
           <thead>
-            <tr class="bg-gray-50 dark:bg-gray-900">
-              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Nome do Arquivo</th>
-              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Tipo</th>
-              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Data de Upload</th>
-              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Status</th>
-              <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Ações</th>
+            <tr class="table-head">
+              <th class="table-th">Nome do Arquivo</th>
+              <th class="table-th">Tipo</th>
+              <th class="table-th">Data de Upload</th>
+              <th class="table-th">Status</th>
+              <th class="table-th">Ações</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="border-t border-[#DEE2E6] dark:border-gray-700" *ngFor="let document of documents">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center gap-2 text-gray-900 dark:text-white"> 
-                <mat-icon [class]="document.icon === 'picture_as_pdf' ? 'text-red-500' : document.icon === 'description' ? 'text-blue-500' : 'text-orange-500'">{{ document.icon }}</mat-icon>
-                {{ document.name }}
+            <tr class="table-row" *ngFor="let document of documents">
+              <td class="file-cell"> 
+                <mat-icon [ngClass]="document.icon === 'picture_as_pdf' ? 'text-red-500' : document.icon === 'description' ? 'text-blue-500' : 'text-orange-500'">{{ document.icon }}</mat-icon>
+                <span class="file-name">{{ document.name }}</span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ document.type }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ document.uploadDate }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="getStatusColor(document.status)">{{ document.status }}</span>
+              <td class="table-td">{{ document.type }}</td>
+              <td class="table-td">{{ document.uploadDate }}</td>
+              <td class="table-td">
+                <span [ngClass]="getStatusClass(document.status)">{{ document.status }}</span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <a class="text-primary hover:text-primary/80" href="#" (click)="onViewDetails(document); $event.preventDefault()">Ver Detalhes</a>
+              <td class="table-td">
+                <a class="text-primary hover:text-primary/80 flex items-center" href="#" (click)="onViewDetails(document); $event.preventDefault()" aria-label="Ver Detalhes" title="Ver Detalhes">
+                  <mat-icon>visibility</mat-icon>
+                </a>
               </td>
             </tr>
           </tbody>
@@ -57,18 +59,16 @@
       </div>
     </div>
     
-    <div class="flex items-center justify-center p-4 mt-4">
-      <a class="flex size-10 items-center justify-center text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary" href="#">
-        <mat-icon>chevron_left</mat-icon>
-      </a>
-      <a class="text-sm font-bold leading-normal flex size-10 items-center justify-center text-white rounded-full bg-primary" href="#">1</a>
-      <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" href="#">2</a>
-      <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" href="#">3</a>
-      <span class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-700 dark:text-gray-300 rounded-full" href="#">...</span>
-      <a class="text-sm font-normal leading-normal flex size-10 items-center justify-center text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" href="#">10</a>
-      <a class="flex size-10 items-center justify-center text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary" href="#">
-        <mat-icon>chevron_right</mat-icon>
-      </a>
+    <div class="mt-4">
+      <div class="flex justify-end pt-1">
+        <mat-paginator
+          class="app-paginator mat-elevation-z0"
+          [length]="totalElements"
+          [pageSize]="size"
+          [pageSizeOptions]="[5, 10, 25]"
+          (page)="onPageChange($event)">
+        </mat-paginator>
+      </div>
     </div>
   </div>
 </main>
