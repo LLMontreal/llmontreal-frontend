@@ -57,15 +57,16 @@
   </div>
 
   <!-- Sucesso -->
-  <div *ngIf="status === 'PROCESSING'" class="status-alert success">
-    <div class="icon-container">
-      <i class="fas fa-check"></i>
-    </div>
-    <div class="text-container">
-      <strong>Upload concluído com sucesso!</strong>
-      <p>Seu documento está sendo processado.</p>
-    </div>
+<div *ngIf="status === 'SUCCESS'" class="status-alert success">
+  <div class="icon-container">
+    <i class="fas fa-check"></i>
   </div>
+  <div class="text-container">
+    <strong>Upload concluído com sucesso!</strong>
+    <p>Seu documento foi enviado e salvo no sistema.</p>
+  </div>
+</div>
+
 
   <!-- Erro -->
   <div *ngIf="status === 'ERROR'" class="status-alert error">

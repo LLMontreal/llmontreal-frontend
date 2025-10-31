@@ -3,22 +3,21 @@ import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DocumentService {
+  private baseUrl = 'http://localhost:8080/api/documents';
 
-  private baseUrl = 'http://localhost:8080/api/documents';//endpoint back
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   uploadDocument(file: File): Observable<HttpEvent<any>> {
     const formData: FormData = new FormData();
     formData.append('file', file);
 
-    return this.http.post<any>(`${this.baseUrl}/upload`, formData, {
+    
+    return this.http.post<any>(this.baseUrl, formData, {
       reportProgress: true,
-      observe: 'events'  
+      observe: 'events',
     });
-
   }
 }
