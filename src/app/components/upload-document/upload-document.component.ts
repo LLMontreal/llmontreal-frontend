@@ -8,6 +8,7 @@ type Status =
   | 'IDLE'
   | 'READY'
   | 'UPLOADING'
+  | 'PROCESSING'
   | 'SUCCESS'
   | 'ERROR'
   | 'CANCELLED';
@@ -92,6 +93,7 @@ export class UploadDocumentComponent {
     this.progress = 0;
     this.uploadFile();
   }
+
   uploadFile() {
     if (!this.selectedFile) return;
 
@@ -104,14 +106,14 @@ export class UploadDocumentComponent {
       .subscribe({
         next: (event: HttpEvent<any>) => {
           if (event.type === HttpEventType.UploadProgress) {
-            const total = event.total ?? this.selectedFile!.size;
-            this.progress = Math.round((event.loaded / total) * 100);
+            if (event.total) {
+              this.progress = Math.round(100 * (event.loaded / event.total));
+            }
           } else if (event.type === HttpEventType.Response) {
-            this.status = 'SUCCESS';
-            this.statusMessage = 'Upload concluído com sucesso!';
+            this.status = 'PROCESSING';
+            this.statusMessage = 'Upload concluído. Processando documento...';
             this.progress = 100;
             this.selectedFile = undefined;
-            console.log('Resposta do backend:', event.body);
           }
         },
         error: (err: any) => {
