@@ -1,0 +1,26 @@
+
+/* Primary button to match prototype (converted from Tailwind to Angular Material styling) */
+.primary-btn {
+	min-width: 84px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	border-radius: 0.5rem; /* rounded-lg */
+	height: 2.5rem; /* h-10 */
+	padding: 0 1.25rem; /* px-5 */
+	background: var(--color-primary);
+	color: #fff;
+	font-size: 0.875rem; /* text-sm */
+	font-weight: 700;
+	gap: 0.5rem;
+	box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+	transition: background-color .15s ease, transform .05s ease;
+}
+.primary-btn:hover {
+	background-color: rgba(var(--color-primary-rgb), 0.9);
+}
+.primary-btn mat-icon {
+	font-size: 1.1rem;
+}
+

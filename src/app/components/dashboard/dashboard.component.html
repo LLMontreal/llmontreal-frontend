@@ -2,7 +2,7 @@
   <div class="container">
     <div class="layout-between" style="align-items:center; gap:1rem; margin-bottom:1.5rem;">
       <h1>Dashboard de Documentos</h1>
-      <button mat-raised-button color="primary" (click)="onUpload()" class="primary-btn">
+      <button mat-raised-button color="primary" [routerLink]="['/upload-document']" class="primary-btn">
         <mat-icon>upload_file</mat-icon>
         <span class="truncate">Enviar Novo Documento</span>
       </button>

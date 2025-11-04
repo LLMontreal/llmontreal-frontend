@@ -12,16 +12,11 @@
     </div>
 
     <div class="header-right">
-      <!-- Mobile menu button -->
       <button type="button" class="mobile-menu-button" aria-label="Abrir menu" aria-expanded="{{isMenuOpen}}" (click)="toggleMenu()">
         <mat-icon>menu</mat-icon>
       </button>
 
-      <!-- Search (Material form field) -->
-      <mat-form-field *ngIf="showSearch" appearance="outline" class="header-search">
-        <mat-icon matPrefix>search</mat-icon>
-        <input matInput placeholder="Pesquisar..." (input)="onSearch($any($event.target).value)" />
-      </mat-form-field>
+     
 
       <button mat-button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Ativar modo claro' : 'Ativar modo escuro'">
         <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>

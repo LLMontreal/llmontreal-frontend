@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterModule } from '@angular/router';
 import { DocumentDTO, DocumentStatus } from '../../models/document.model';
 import { DocumentService } from '../../services/document.service';
 
@@ -17,7 +18,7 @@ interface UiDocument {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatPaginatorModule],
+  imports: [CommonModule, MatIconModule, MatPaginatorModule, MatButtonModule, RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
