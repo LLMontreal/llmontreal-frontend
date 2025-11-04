@@ -1,40 +1,30 @@
 <header class="main-header" [class.menu-open]="isMenuOpen">
-  <div class="container header-inner layout-between">
+  <div class="container layout-between">
     <div class="header-left">
       <a routerLink="/" class="logo">
         <img src="assets/logo-LlMontreal.svg" alt="LlMontreal logo" class="logo-icon" />
         <span class="brand-name">LLMontreal</span>
       </a>
-
-      <nav class="header-nav hidden md:flex items-center gap-6" aria-label="Primary Navigation">
-        <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" routerLink="/upload" routerLinkActive="active-link">Upload de Documento</a>
-        <a class="text-sm font-medium hover:text-primary dark:hover:text-primary" routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a>
+      <nav class="header-nav" aria-label="Primary Navigation">
+        <a routerLink="/upload" routerLinkActive="active-link">Upload de Documento</a>
+        <a routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a>
       </nav>
     </div>
 
-    <div class="header-right flex items-center gap-4">
+    <div class="header-right">
       <!-- Mobile menu button -->
-      <button type="button" class="md:hidden" aria-label="Abrir menu" aria-expanded="{{isMenuOpen}}" (click)="toggleMenu()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
-          <path d="M3 12h18"></path>
-          <path d="M3 6h18"></path>
-          <path d="M3 18h18"></path>
-        </svg>
+      <button type="button" class="mobile-menu-button" aria-label="Abrir menu" aria-expanded="{{isMenuOpen}}" (click)="toggleMenu()">
+        <mat-icon>menu</mat-icon>
       </button>
-      <label *ngIf="showSearch" class="hidden sm:flex flex-col min-w-40 max-w-64">
-        <div class="flex w-full flex-1 items-stretch rounded-lg h-10">
-          <div class="text-gray-500 flex bg-gray-100 dark:bg-gray-800 items-center justify-center pl-3 rounded-l-lg border-r-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <circle cx="11" cy="11" r="7"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-          <input (input)="onSearch($any($event.target).value)" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-gray-200 focus:outline-0 focus:ring-0 border-none bg-gray-100 dark:bg-gray-800 h-full placeholder:text-gray-500 px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Pesquisar..." value=""/>
-        </div>
-      </label>
 
-      <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Ativar modo claro' : 'Ativar modo escuro'">
-        <i class="fas" [ngClass]="isDark ? 'fa-sun' : 'fa-moon'"></i>
+      <!-- Search (Material form field) -->
+      <mat-form-field *ngIf="showSearch" appearance="outline" class="header-search">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Pesquisar..." (input)="onSearch($any($event.target).value)" />
+      </mat-form-field>
+
+      <button mat-button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Ativar modo claro' : 'Ativar modo escuro'">
+        <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
       </button>
     </div>
   </div>

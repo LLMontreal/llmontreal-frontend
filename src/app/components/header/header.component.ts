@@ -5,8 +5,10 @@ import { filter } from 'rxjs/operators';
 import { Subject, Subscription as RxSub } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 import { ThemeService } from '../../services/theme.service';
-import { MatIconModule } from '@angular/material/icon'; 
-import { MatButtonModule } from '@angular/material/button'; 
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { DocumentService } from '../../services/document.service';
 
 
@@ -15,7 +17,7 @@ import { DocumentService } from '../../services/document.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule], 
+  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule], 
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
