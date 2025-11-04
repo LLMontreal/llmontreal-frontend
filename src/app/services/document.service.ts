@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DocumentDTO, DocumentStatus, Page } from '../models/document.model';
+import { HttpEvent } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,19 @@ export class DocumentService {
         } as Page<DocumentDTO>);
       })
     );
+  }
+
+  /**
+   * Envia um arquivo para o servidor e retorna os eventos HTTP (upload progress / response).
+   */
+  uploadDocument(file: File) {
+    const form = new FormData();
+    form.append('file', file);
+    // endpoint: POST /documents/upload (ajuste se seu backend usar outro path)
+    return this.http.post<any>(`${this.apiUrl}/upload`, form, {
+      reportProgress: true,
+      observe: 'events'
+    }) as Observable<HttpEvent<any>>;
   }
 
   getDocumentById(id: number): Observable<DocumentDTO | null> {
