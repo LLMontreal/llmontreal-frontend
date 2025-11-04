@@ -10,7 +10,6 @@ import { DocumentDTO, DocumentStatus, Page } from '../models/document.model';
 export class DocumentService {
   constructor(private http: HttpClient) {}
 
-  // URL base da sua API. Ajuste se for diferente.
   private apiUrl = '/documents';
 
   /**
@@ -35,7 +34,6 @@ export class DocumentService {
     return this.http.get<Page<DocumentDTO>>(this.apiUrl, { params }).pipe(
       catchError(err => {
         console.error("Erro ao buscar documentos:", err);
-        // Retorna uma página vazia em caso de erro para não quebrar a UI
         return of({
           content: [],
           totalPages: 0,
@@ -51,10 +49,6 @@ export class DocumentService {
     );
   }
 
-  /**
-   * Busca um único documento pelo ID.
-   * (Assumindo que você terá um endpoint /documents/{id})
-   */
   getDocumentById(id: number): Observable<DocumentDTO | null> {
     return this.http.get<DocumentDTO>(`${this.apiUrl}/${id}`).pipe(
       catchError(err => {
