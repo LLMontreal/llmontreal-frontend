@@ -1,9 +1,7 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap"); // Mantenha a importação da fonte aqui se for usar Poppins/Inter
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind removed: using Angular Material + custom global styles instead */
 
 
 :root {
