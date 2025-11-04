@@ -144,6 +144,7 @@ body, input, button, textarea { font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1rem);
 }
 
 html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: var(--font-family-display);

@@ -1,0 +1,91 @@
+<h2>Upload de Documentos</h2>
+<p class="subtitle">
+  Arraste e solte seus arquivos aqui ou selecione um arquivo para processar
+</p>
+<div class="upload-container">
+  <div
+    *ngIf="
+      status === 'IDLE' ||
+      status === 'READY' ||
+      status === 'ERROR' ||
+      status === 'CANCELLED'
+    "
+    class="upload-area"
+    (drop)="onFileDrop($event)"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    [class.dragging]="isDragging"
+  >
+    <input
+      type="file"
+      id="fileInput"
+      (change)="onFileSelected($event)"
+      accept=".pdf,.docx,.png,.jpg,.jpeg,.txt"
+      hidden
+    />
+
+    <label for="fileInput">
+      <i class="fas fa-cloud-upload-alt upload-icon"></i>
+      <p>Arraste e solte seus arquivos aqui</p>
+      <span class="separator-text">ou</span>
+      <span class="btn-select">Selecione um Arquivo</span>
+    </label>
+  </div>
+
+  <p
+    *ngIf="
+      status === 'IDLE' ||
+      status === 'READY' ||
+      status === 'ERROR' ||
+      status === 'CANCELLED'
+    "
+    class="support-text"
+  >
+    Suporta PDF, DOCX, TXT
+  </p>
+
+  <div *ngIf="status === 'UPLOADING'" class="progress-section">
+    <div class="progress-header">
+      <span>Uploading...</span>
+      <span>{{ progress | number : "1.0-0" }}%</span>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar" [style.width.%]="progress"></div>
+    </div>
+    <!-- Botão de Cancelar durante o upload -->
+    <button (click)="cancelUpload()" class="btn-cancel">Cancelar</button>
+  </div>
+
+  <!-- Sucesso -->
+  <div *ngIf="status === 'PROCESSING'" class="status-alert success">
+    <div class="icon-container">
+      <i class="fas fa-check"></i>
+    </div>
+    <div class="text-container">
+      <strong>Upload concluído com sucesso!</strong>
+      <p>Seu documento está sendo processado.</p>
+    </div>
+  </div>
+
+  <!-- Erro -->
+  <div *ngIf="status === 'ERROR'" class="status-alert error">
+    <div class="icon-container">
+      <i class="fas fa-times"></i>
+    </div>
+    <div class="text-container">
+      <strong>Ocorreu um erro</strong>
+      <p>{{ statusMessage }}</p>
+    </div>
+  </div>
+
+  <!-- Cancelado -->
+  <div *ngIf="status === 'CANCELLED'" class="status-alert error">
+    <div class="icon-container">
+      <i class="fas fa-ban"></i>
+    </div>
+    <div class="text-container">
+      <strong>Upload cancelado</strong>
+      <p>Você cancelou o envio do arquivo.</p>
+    </div>
+  </div>
+</div>
