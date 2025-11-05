@@ -30,9 +30,7 @@
   --color-primary-rgb: 74,144,226;
 }
 
-/* Responsive system: breakpoints and spacing scale */
 :root {
-  /* Breakpoints (mobile-first) */
   --bp-sm: 640px;   
   --bp-md: 768px;   
   --bp-lg: 1024px;  
@@ -49,14 +47,12 @@
   --gap-default: var(--space-4);
 }
 
-/* Responsive typography using clamp for fluid scaling */
 html { font-size: 16px; }
 h1 { font-size: clamp(1.5rem, 1.2rem + 2.5vw, 2.25rem); }
 h2 { font-size: clamp(1.25rem, 1rem + 1.5vw, 1.75rem); }
 h3 { font-size: clamp(1.125rem, 0.9rem + 1vw, 1.25rem); }
 body, input, button, textarea { font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1rem); }
 
-/* Container: centralizes content and gives consistent horizontal padding */
 .container {
   width: 100%;
   margin-left: auto;
@@ -78,29 +74,24 @@ body, input, button, textarea { font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1rem);
   .container { max-width: 1280px; }
 }
 
-/* Layout helpers */
 .layout-center { display: flex; align-items: center; justify-content: center; }
 .layout-between { display: flex; align-items: center; justify-content: space-between; }
 
-/* Stack helper: vertical stack with configurable gap using CSS variable --gap */
 .stack { display: flex; flex-direction: column; gap: var(--gap, var(--gap-default)); }
 .stack.row { flex-direction: row; }
 
-/* Gap helpers */
 .g-1 { gap: var(--space-1); }
 .g-2 { gap: var(--space-2); }
 .g-3 { gap: var(--space-3); }
 .g-4 { gap: var(--space-4); }
 .g-5 { gap: var(--space-5); }
 
-/* Simple responsive grid helpers. Use --cols to set columns or helper classes below */
 .grid { display: grid; gap: var(--gap, var(--gap-default)); grid-template-columns: repeat(var(--cols,1), 1fr); }
 .cols-1 { --cols: 1; }
 .cols-2 { --cols: 2; }
 .cols-3 { --cols: 3; }
 .cols-4 { --cols: 4; }
 
-/* Responsive helpers: prefix with sm-/md-/lg- by copying the class name for each breakpoint */
 @media (min-width: var(--bp-sm)) {
   .sm-cols-2 { grid-template-columns: repeat(2,1fr); }
   .sm-cols-3 { grid-template-columns: repeat(3,1fr); }
@@ -114,16 +105,13 @@ body, input, button, textarea { font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1rem);
   .lg-cols-4 { grid-template-columns: repeat(4,1fr); }
 }
 
-/* Visibility helpers */
 .hide-sm { display: none; }
 @media (min-width: var(--bp-sm)) { .hide-sm { display: initial; } }
 .show-sm { display: initial; }
 @media (min-width: var(--bp-sm)) { .show-sm { display: none; } }
 
-/* Utility to center images and icons consistently */
 .media-center { display:flex; align-items:center; justify-content:center; }
 
-/* Small helpers to reduce CSS churn in components - keep names short and semantic */
 .muted { color: #6B7280; }
 .truncate { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
@@ -192,7 +180,6 @@ body.dark .montreal-logo {
   filter: brightness(0) invert(1);
 }
 
-/* Dashboard helper classes (plain CSS to avoid PostCSS @apply issues) */
 .dash-actions {
   display: flex;
   flex-wrap: wrap;
