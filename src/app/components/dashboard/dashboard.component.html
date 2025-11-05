@@ -1,0 +1,72 @@
+<main class="py-8">
+  <div class="container">
+    <div class="layout-between" style="align-items:center; gap:1rem; margin-bottom:1.5rem;">
+      <h1>Dashboard de Documentos</h1>
+      <button mat-raised-button [routerLink]="['/upload-document']" class="primary-btn">
+        <mat-icon>upload_file</mat-icon>
+        <span class="truncate">Enviar Novo Documento</span>
+      </button>
+    </div>
+    
+      <div class="dash-actions mb-6">
+        <button class="btn-filter" [ngClass]="selectedFilter === 'Todos' ? 'btn-filter--active' : 'btn-filter--inactive'" (click)="onFilterChange('Todos')">
+          <p class="text-sm font-medium">Todos</p>
+        </button>
+        <button class="btn-filter" [ngClass]="selectedFilter === 'Processando' ? 'btn-filter--active' : 'btn-filter--inactive'" (click)="onFilterChange('Processando')">
+          <p class="text-sm font-medium">Processando</p>
+        </button>
+        <button class="btn-filter" [ngClass]="selectedFilter === 'Pronto' ? 'btn-filter--active' : 'btn-filter--inactive'" (click)="onFilterChange('Pronto')">
+          <p class="text-sm font-medium">Pronto</p>
+        </button>
+        <button class="btn-filter" [ngClass]="selectedFilter === 'Erro' ? 'btn-filter--active' : 'btn-filter--inactive'" (click)="onFilterChange('Erro')">
+          <p class="text-sm font-medium">Erro</p>
+        </button>
+      </div>
+
+    <div class="table-root">
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead>
+            <tr class="table-head">
+              <th class="table-th">Nome do Arquivo</th>
+              <th class="table-th">Tipo</th>
+              <th class="table-th">Data de Upload</th>
+              <th class="table-th">Status</th>
+              <th class="table-th">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-row" *ngFor="let document of documents">
+              <td class="file-cell"> 
+                <mat-icon [ngClass]="document.icon === 'picture_as_pdf' ? 'text-red-500' : document.icon === 'description' ? 'text-blue-500' : 'text-orange-500'">{{ document.icon }}</mat-icon>
+                <span class="file-name">{{ document.name }}</span>
+              </td>
+              <td class="table-td">{{ document.type }}</td>
+              <td class="table-td">{{ document.uploadDate }}</td>
+              <td class="table-td">
+                <span [ngClass]="getStatusClass(document.status)">{{ document.status }}</span>
+              </td>
+              <td class="table-td">
+                <a class="text-primary hover:text-primary/80 flex items-center" href="#" (click)="onViewDetails(document); $event.preventDefault()" aria-label="Ver Detalhes" title="Ver Detalhes">
+                  <mat-icon>visibility</mat-icon>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="mt-4">
+      <div class="flex justify-end pt-1">
+        <mat-paginator
+          class="app-paginator mat-elevation-z0"
+          [length]="totalElements"
+          [pageSize]="size"
+          [pageSizeOptions]="[5, 10, 25]"
+          (page)="onPageChange($event)">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</main>

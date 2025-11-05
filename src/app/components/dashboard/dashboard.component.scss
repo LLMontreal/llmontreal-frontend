@@ -1,0 +1,24 @@
+.primary-btn {
+	min-width: 84px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	border-radius: 0.5rem; 
+	height: 2.5rem; 
+	padding: 0 1.25rem; 
+	background: var(--color-primary) !important;
+	background-image: none !important;
+	font-size: 0.875rem; 
+	font-weight: 700;
+	gap: 0.5rem;
+	box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+	transition: background-color .15s ease, transform .05s ease;
+}
+.primary-btn:hover {
+	background-color: rgba(var(--color-primary-rgb), 0.9);
+}
+.primary-btn mat-icon {
+	font-size: 1.1rem;
+}
+
