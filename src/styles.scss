@@ -1,8 +1,5 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap"); // Mantenha a importação da fonte aqui se for usar Poppins/Inter
-
-/* Tailwind removed: using Angular Material + custom global styles instead */
-
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap"); 
 
 :root {
   --color-primary: #4A90E2;
@@ -293,7 +290,6 @@ body.dark .status-erro { background: #7f1d1d; color: #fecaca; }
 .status-default { background: #f3f4f6; color: #374151; }
 body.dark .status-default { background: #111827; color: #9ca3af; }
 
-/* Material paginator tweaks using global classname 'app-paginator' */
 .app-paginator {
   display: inline-flex;
   align-items: center;
