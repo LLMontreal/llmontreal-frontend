@@ -54,14 +54,6 @@ body.dark .main-header {
   .mobile-menu-button { display: none; }
 }
 
-/* Header search field adjustments */
-.header-search {
-  width: 260px;
-  margin-left: 0.5rem;
-}
-@media (max-width: 640px) {
-  .header-search { display: none; }
-}
 
 .logo-icon {
   width: 48px;
@@ -123,12 +115,10 @@ body.dark .header-nav a {
   }
 }
 
-/* Mobile menu behavior: show nav on md+ by default, or when header has .menu-open */
 @media (min-width: 768px) {
   .header-nav { display: flex; }
 }
 
-/* When mobile menu opened, display nav as a dropdown */
 .menu-open .header-nav {
   display: flex;
   flex-direction: column;
