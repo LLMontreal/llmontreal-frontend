@@ -1,17 +1,15 @@
-
-/* Primary button to match prototype (converted from Tailwind to Angular Material styling) */
 .primary-btn {
 	min-width: 84px;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	overflow: hidden;
-	border-radius: 0.5rem; /* rounded-lg */
-	height: 2.5rem; /* h-10 */
-	padding: 0 1.25rem; /* px-5 */
-	background: var(--color-primary);
-	color: #fff;
-	font-size: 0.875rem; /* text-sm */
+	border-radius: 0.5rem; 
+	height: 2.5rem; 
+	padding: 0 1.25rem; 
+	background: var(--color-primary) !important;
+	background-image: none !important;
+	font-size: 0.875rem; 
 	font-weight: 700;
 	gap: 0.5rem;
 	box-shadow: 0 6px 12px rgba(0,0,0,0.06);
