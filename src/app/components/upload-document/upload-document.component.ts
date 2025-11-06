@@ -140,4 +140,7 @@ export class UploadDocumentComponent {
     this.progress = 0;
     this.selectedFile = undefined;
   }
+    ngOnDestroy(): void {
+    this.uploadSub?.unsubscribe();
+  }
 }

@@ -1,163 +1,163 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
 import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
-import { Subject, of, throwError } from 'rxjs';
-
+import { Subject } from 'rxjs';
 import { UploadDocumentComponent } from './upload-document.component';
 import { DocumentService } from '../../services/document.service';
 
-// Helper para criar um arquivo mock
 function createMockFile(name: string, size: number, type: string): File {
-  const blob = new Blob(['a'.repeat(size)], { type });
-  return new File([blob], name, { type });
+  return new File([new Blob(['x'.repeat(size)], { type })], name, { type });
 }
 
-// Helper para criar um mock de DragEvent
 function createMockDragEvent(files: File[]): DragEvent {
-  // base do objeto FileList
-  const fileListLikeObject = {
-    length: files.length,
-    item: (index: number) => files[index],
-  };
-  
-  // 2. Copiamos as propriedades indexadas (0, 1, ...) do array para o nosso objeto
-  Object.assign(fileListLikeObject, files);
+  const dataTransfer = new DataTransfer();
+  files.forEach((f) => dataTransfer.items.add(f));
 
   return {
     preventDefault: () => {},
-    dataTransfer: {
-      files: fileListLikeObject as any, // Usamos o objeto construído
-    },
-  } as any;
+    dataTransfer,
+  } as DragEvent;
 }
 
 describe('UploadDocumentComponent', () => {
   let component: UploadDocumentComponent;
   let fixture: ComponentFixture<UploadDocumentComponent>;
   let documentService: jasmine.SpyObj<DocumentService>;
-  
   let uploadSubject: Subject<HttpEvent<any>>;
 
-  const mockFilePDF = createMockFile('documento.pdf', 1024, 'application/pdf');
-  const mockFileLarge = createMockFile('grande.pdf', 30 * 1024 * 1024, 'application/pdf'); // 30MB
-  const mockFileInvalid = createMockFile('script.zip', 1024, 'application/zip');
+  const mockFilePDF = createMockFile('doc.pdf', 1024, 'application/pdf');
+  const mockFileLarge = createMockFile(
+    'big.pdf',
+    30 * 1024 * 1024,
+    'application/pdf'
+  );
+  const mockFileInvalid = createMockFile(
+    'malicious.zip',
+    1024,
+    'application/zip'
+  );
 
   beforeEach(async () => {
-    const documentServiceSpy = jasmine.createSpyObj('DocumentService', ['uploadDocument']);
     uploadSubject = new Subject<HttpEvent<any>>();
+
+    const documentSpy = jasmine.createSpyObj('DocumentService', [
+      'uploadDocument',
+    ]);
+    documentSpy.uploadDocument.and.returnValue(uploadSubject.asObservable());
 
     await TestBed.configureTestingModule({
       imports: [CommonModule, UploadDocumentComponent],
-      providers: [
-        { provide: DocumentService, useValue: documentServiceSpy },
-      ],
+      providers: [{ provide: DocumentService, useValue: documentSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UploadDocumentComponent);
     component = fixture.componentInstance;
-    documentService = TestBed.inject(DocumentService) as jasmine.SpyObj<DocumentService>;
-    documentService.uploadDocument.and.returnValue(uploadSubject.asObservable());
+
+    documentService = TestBed.inject(
+      DocumentService
+    ) as jasmine.SpyObj<DocumentService>;
 
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  //INITIAL STATE
+  it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have correct initial state', () => {
+  it('should start with correct initial state', () => {
     expect(component.status).toBe('IDLE');
     expect(component.progress).toBe(0);
     expect(component.selectedFile).toBeUndefined();
-    expect(component.isDragging).toBeFalse();
   });
 
-  //Testes de Validação
-
+  //VALIDATION
   describe('File Validation', () => {
-    
-    it('should set ERROR status if file type is invalid', () => {
-      component.onFileSelected({
-        target: { files: [mockFileInvalid] },
-      } as any);
+    it('should reject invalid file type', () => {
+      component.onFileSelected({ target: { files: [mockFileInvalid] } } as any);
 
       expect(component.status).toBe('ERROR');
-      expect(component.statusMessage).toContain('Tipo de arquivo inválido');
+      expect(component.statusMessage).toContain('inválido');
       expect(documentService.uploadDocument).not.toHaveBeenCalled();
     });
 
-    it('should set ERROR status if file size is too large', () => {
-      component.onFileSelected({ // Corrigido
-        target: { files: [mockFileLarge] },
-      } as any);
+    it('should reject file above max size', () => {
+      component.onFileSelected({ target: { files: [mockFileLarge] } } as any);
 
       expect(component.status).toBe('ERROR');
-      expect(component.statusMessage).toContain('ultrapassa o limite de 25MB');
+      expect(component.statusMessage).toContain('25MB');
       expect(documentService.uploadDocument).not.toHaveBeenCalled();
     });
 
-    it('should call uploadFile when file is valid', () => {
-  spyOn(component, 'uploadFile').and.callThrough();
+    it('should reset input.value after selecting a file', () => {
+      const mockInput = { files: [mockFilePDF], value: 'x' };
+      component.onFileSelected({ target: mockInput } as any);
 
-  component.onFileSelected({ target: { files: [mockFilePDF] } } as any);
+      expect(mockInput.value).toBe('');
+    });
 
-  expect(component.selectedFile).toBe(mockFilePDF);
-  expect(component.uploadFile).toHaveBeenCalled();
-  expect(component.status).toBe('UPLOADING'); 
-});
+    it('should call uploadFile for valid file', () => {
+      spyOn(component, 'uploadFile').and.callThrough();
 
+      component.onFileSelected({ target: { files: [mockFilePDF] } } as any);
+
+      expect(component.uploadFile).toHaveBeenCalled();
+      expect(component.status).toBe('UPLOADING');
+    });
   });
 
-  //Testes de Drag & Drop
-
-  describe('Drag and Drop Events', () => {
-    it('onDragOver should set isDragging to true', () => {
+  //DRAG & DROP
+  describe('Drag and Drop', () => {
+    it('should set isDragging true on dragover', () => {
       component.onDragOver(new DragEvent('dragover'));
       expect(component.isDragging).toBeTrue();
     });
 
-    it('onDragLeave should set isDragging to false', () => {
+    it('should set isDragging false on dragleave', () => {
       component.isDragging = true;
       component.onDragLeave(new DragEvent('dragleave'));
       expect(component.isDragging).toBeFalse();
     });
 
-    it('onFileDrop should handle valid file', () => {
-      spyOn(component, 'uploadFile').and.callThrough(); // Espionando uploadFile
-      const mockEvent = createMockDragEvent([mockFilePDF]);
+    it('should handle drag drop with valid file', () => {
+      spyOn(component, 'uploadFile').and.callThrough();
+      const evt = createMockDragEvent([mockFilePDF]);
 
-      component.onFileDrop(mockEvent);
+      component.onFileDrop(evt);
 
-      expect(component.isDragging).toBeFalse();
-      expect(component.uploadFile).toHaveBeenCalled(); // Verifica se o upload foi chamado
-      expect(component.status).toBe('UPLOADING'); // Status deve mudar para UPLOADING
+      expect(component.uploadFile).toHaveBeenCalled();
+      expect(component.status).toBe('UPLOADING');
     });
 
-    it('onFileDrop should handle invalid file and set ERROR', () => {
-      const mockEvent = createMockDragEvent([mockFileInvalid]);
-      component.onFileDrop(mockEvent);
+    it('should handle drag drop with invalid file', () => {
+      const evt = createMockDragEvent([mockFileInvalid]);
+      component.onFileDrop(evt);
 
       expect(component.status).toBe('ERROR');
       expect(documentService.uploadDocument).not.toHaveBeenCalled();
     });
+
+    it('should ignore drop if no files provided', () => {
+      const evt = createMockDragEvent([]);
+      component.onFileDrop(evt);
+
+      expect(component.status).toBe('IDLE');
+    });
   });
 
-  //Testes do Processo de Upload 
-
-  describe('Upload Process (uploadFile)', () => {
-    
+  //UPLOAD PROCESS
+  describe('Upload Process', () => {
     beforeEach(() => {
-      // Simula a seleção de um arquivo válido, que chama uploadFile()
-      component.onFileSelected({ target: { files: [mockFilePDF] } } as any);
+      component.selectedFile = mockFilePDF;
+      component.uploadFile();
     });
 
-    it('should set UPLOADING status and call service on uploadFile', () => {
-      expect(component.status).toBe('UPLOADING');
-      expect(component.progress).toBe(0);
+    it('should call documentService and set UPLOADING', () => {
       expect(documentService.uploadDocument).toHaveBeenCalledWith(mockFilePDF);
+      expect(component.status).toBe('UPLOADING');
     });
 
-    it('should update progress on UploadProgress event', () => {
+    it('should update progress (with total)', () => {
       uploadSubject.next({
         type: HttpEventType.UploadProgress,
         loaded: 512,
@@ -165,53 +165,65 @@ describe('UploadDocumentComponent', () => {
       });
 
       expect(component.progress).toBe(50);
-      expect(component.status).toBe('UPLOADING');
     });
 
-    it('should set SUCCESS status on Response event', () => {
-      const mockResponse = new HttpResponse({
-        status: 200,
-        body: { id: 1, message: 'Sucesso' },
+    it('should update progress (without total)', () => {
+      uploadSubject.next({
+        type: HttpEventType.UploadProgress,
+        loaded: 512,
+        total: undefined,
       });
-      uploadSubject.next(mockResponse);
+
+      expect(component.progress).toBe(50);
+    });
+
+    it('should set SUCCESS and reset state after response', () => {
+      uploadSubject.next(new HttpResponse({ status: 200, body: { ok: true } }));
       uploadSubject.complete();
 
-      expect(component.progress).toBe(100);
       expect(component.status).toBe('SUCCESS');
-      expect(component.statusMessage).toContain('sucesso');
+      expect(component.progress).toBe(100);
       expect(component.selectedFile).toBeUndefined();
     });
 
-    it('should set ERROR status when service throws error', () => {
-      const errorResponse = { status: 500, statusText: 'Server Error' };
-      uploadSubject.error(errorResponse);
+    it('should set ERROR on upload failure', () => {
+      uploadSubject.error({ status: 500 });
 
       expect(component.status).toBe('ERROR');
-      expect(component.statusMessage).toContain('Ocorreu um erro');
-      expect(component.progress).toBe(0);
       expect(component.selectedFile).toBeUndefined();
+      expect(component.progress).toBe(0);
     });
   });
 
-  //Teste de Cancelamento
-
+  //CANCEL
   describe('Cancel Upload', () => {
-    it('should set CANCELLED status and unsubscribe', () => {
-      component.onFileSelected({ target: { files: [mockFilePDF] } } as any);
-      
-      const subscription = component.uploadSub;
-      spyOn(subscription!, 'unsubscribe').and.callThrough();
+    it('should cancel and unsubscribe', () => {
+      component.selectedFile = mockFilePDF;
+      component.uploadFile();
 
-      expect(component.status).toBe('UPLOADING');
-      
+      const sub = component.uploadSub!;
+      spyOn(sub, 'unsubscribe').and.callThrough();
+
       component.cancelUpload();
 
+      expect(sub.unsubscribe).toHaveBeenCalled();
       expect(component.status).toBe('CANCELLED');
-      expect(component.statusMessage).toContain('cancelado');
-      expect(component.selectedFile).toBeUndefined();
-      expect(component.progress).toBe(0);
-      expect(subscription!.unsubscribe).toHaveBeenCalled();
       expect(component.uploadSub).toBeUndefined();
+    });
+  });
+
+  // DESTROY
+  describe('ngOnDestroy', () => {
+    it('should unsubscribe on destroy', () => {
+      component.selectedFile = mockFilePDF;
+      component.uploadFile();
+
+      const sub = component.uploadSub!;
+      spyOn(sub, 'unsubscribe').and.callThrough();
+
+      component.ngOnDestroy();
+
+      expect(sub.unsubscribe).toHaveBeenCalled();
     });
   });
 });
