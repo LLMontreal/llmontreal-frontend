@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DocumentDTO, DocumentStatus } from '../../models/document.model';
 import { DocumentService } from '../../services/document.service';
 
 interface UiDocument {
+  id: number;
   name: string;
   type: string;
   uploadDate: string;
-  status: 'Pronto' | 'Processando' | 'Erro' | 'Pendente';
+  status: DocumentStatus;
   icon: string;
 }
 
@@ -23,32 +25,18 @@ interface UiDocument {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  selectedFilter = 'Todos';
+  private documentService = inject(DocumentService);
+  private destroyRef = inject(DestroyRef);
 
+  selectedFilter: string = 'Todos';
   documents: UiDocument[] = [];
   loading = false;
   page = 0;
   size = 10;
   totalElements = 0;
 
-  constructor(private documentService: DocumentService) {}
-
   ngOnInit(): void {
     this.fetchDocuments();
-  }
-
-  private mapStatusToLabel(status: DocumentStatus | string): UiDocument['status'] {
-    switch (status) {
-      case DocumentStatus.COMPLETED:
-        return 'Pronto';
-      case DocumentStatus.PROCESSING:
-        return 'Processando';
-      case DocumentStatus.FAILED:
-        return 'Erro';
-      case DocumentStatus.PENDING:
-      default:
-        return 'Pendente';
-    }
   }
 
   private fileTypeToIcon(fileType: string): string {
@@ -61,41 +49,39 @@ export class DashboardComponent implements OnInit {
 
   private dtoToUi(dto: DocumentDTO): UiDocument {
     return {
+      id: dto.id,
       name: dto.fileName,
       type: dto.fileType,
-      uploadDate: dto.createdAt ? new Date(dto.createdAt).toLocaleDateString() : '',
-      status: this.mapStatusToLabel(dto.status),
+      uploadDate: dto.createdAt, 
+      status: dto.status,
       icon: this.fileTypeToIcon(dto.fileType)
     };
   }
 
-  fetchDocuments() {
+  fetchDocuments(): void {
     this.loading = true;
     const status = this.selectedFilter === 'Todos' ? null : this.filterToStatus(this.selectedFilter);
-    this.documentService.getDocuments(this.page, this.size, status).subscribe({
-      next: (page) => {
-        this.documents = page.content.map(d => this.dtoToUi(d));
-        this.totalElements = page.totalElements;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Erro ao carregar documentos', err);
-        this.documents = [];
-        this.loading = false;
-      }
-    });
+
+    this.documentService.getDocuments(this.page, this.size, status)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (page) => {
+          this.documents = page.content.map(d => this.dtoToUi(d));
+          this.totalElements = page.totalElements;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Erro ao carregar documentos', err);
+          this.documents = [];
+          this.loading = false;
+        }
+      });
   }
 
-  onFilterChange(filter: string) {
+  onFilterChange(filter: string): void {
     this.selectedFilter = filter;
     this.page = 0;
     this.fetchDocuments();
-  }
-
-  onUpload() {
-  }
-
-  onViewDetails(document: UiDocument) {
   }
 
   private filterToStatus(filter: string): DocumentStatus | null {
@@ -106,26 +92,25 @@ export class DashboardComponent implements OnInit {
         return DocumentStatus.PROCESSING;
       case 'Erro':
         return DocumentStatus.FAILED;
-      case 'Todos':
       default:
         return null;
     }
   }
 
-  getStatusClass(status: string): string {
+  getStatusClass(status: DocumentStatus): string {
     switch (status) {
-      case 'Pronto':
+      case DocumentStatus.COMPLETED:
         return 'status-badge status-pronto';
-      case 'Processando':
+      case DocumentStatus.PROCESSING:
         return 'status-badge status-processando';
-      case 'Erro':
+      case DocumentStatus.FAILED:
         return 'status-badge status-erro';
       default:
         return 'status-badge status-default';
     }
   }
 
-  onPageChange(event: PageEvent) {
+  onPageChange(event: PageEvent): void {
     this.page = event.pageIndex;
     this.size = event.pageSize;
     this.fetchDocuments();
