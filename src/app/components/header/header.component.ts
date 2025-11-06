@@ -6,7 +6,6 @@ import { Subscription as RxSub } from 'rxjs';
 import { ThemeService } from '../../services/theme.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-// removed MatFormFieldModule/MatInputModule: search removed
 import { DocumentService } from '../../services/document.service';
 
 
@@ -38,7 +37,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.sub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(() => {
-        // close mobile menu on navigation
         this.isMenuOpen = false;
       });
   }
@@ -50,9 +48,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
-
-  // search removed: updateShowSearch removed
-
   
   toggleTheme() {
     this.themeService.toggleTheme();
