@@ -71,7 +71,6 @@ export class DashboardComponent implements OnInit {
           this.loading = false;
         },
         error: (err) => {
-          console.error('Erro ao carregar documentos', err);
           this.documents = [];
           this.loading = false;
         }
