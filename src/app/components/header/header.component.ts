@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit, computed, Signal, inject } from '@angular/core';
+import { Component, OnInit, computed, Signal, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { Subscription as RxSub } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ThemeService } from '../../services/theme.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,8 +18,8 @@ import { DocumentService } from '../../services/document.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  private sub?: RxSub;
+export class HeaderComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   isMenuOpen = false;
   private router = inject(Router); 
 
@@ -29,15 +29,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.sub = this.router.events
-      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+    this.router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe(() => {
         this.isMenuOpen = false;
       });
-  }
-
-  ngOnDestroy(): void {
-    this.sub?.unsubscribe();
   }
 
   toggleMenu(): void {
