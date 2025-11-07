@@ -32,9 +32,9 @@ describe('UploadDocumentComponent', () => {
     'application/pdf'
   );
   const mockFileInvalid = createMockFile(
-    'malicious.zip',
+    'virus.exe',
     1024,
-    'application/zip'
+    'application/x-msdownload'
   );
 
   beforeEach(async () => {
