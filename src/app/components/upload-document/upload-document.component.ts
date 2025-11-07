@@ -116,7 +116,7 @@ export class UploadDocumentComponent {
             this.selectedFile = undefined;
           }
         },
-        error: (err: any) => {
+        error: (err) => {
           console.error(err);
           this.setError('Ocorreu um erro ao enviar o arquivo.');
         },
