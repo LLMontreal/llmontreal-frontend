@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, effect, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, Signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -25,12 +25,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private themeService = inject(ThemeService);
   private documentService = inject(DocumentService);
-  isDark = false;
-  constructor() {
-    effect(() => {
-      this.isDark = this.themeService.theme() === 'dark';
-    });
-  }
+  isDark: Signal<boolean> = computed(() => this.themeService.theme() === 'dark');
 
 
   ngOnInit(): void {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpEvent } from '@angular/common/http';
-import { Observable, of, catchError } from 'rxjs'; 
+import { Observable, catchError, throwError } from 'rxjs'; 
 import { DocumentDTO, DocumentStatus, Page } from '../models/document.model';
 
 @Injectable({
@@ -26,24 +26,12 @@ export class DocumentService {
 
     return this.http.get<Page<DocumentDTO>>(this.apiUrl, { params }).pipe(
       catchError((err: any) => { 
-        console.error('Erro ao buscar documentos:', err);
-
-        return of({
-          content: [],
-          totalPages: 0,
-          totalElements: 0,
-          size,
-          number: page,
-          numberOfElements: 0,
-          first: true,
-          last: true,
-          empty: true
-        } as Page<DocumentDTO>);
+        console.error('❌ Erro ao buscar documentos:', err);
+        return throwError(() => err); 
       })
     );
   }
 
- 
   uploadDocument(file: File): Observable<HttpEvent<any>> {
     const form = new FormData();
     form.append('file', file);
@@ -54,12 +42,11 @@ export class DocumentService {
     });
   }
 
- 
-  getDocumentById(id: number): Observable<DocumentDTO | null> {
+  getDocumentById(id: number): Observable<DocumentDTO> {
     return this.http.get<DocumentDTO>(`${this.apiUrl}/${id}`).pipe(
       catchError((err: any) => { 
-        console.error(`Erro ao buscar documento ${id}:`, err);
-        return of(null);
+        console.error(`❌ Erro ao buscar documento ${id}:`, err);
+        return throwError(() => err); 
       })
     );
   }
