@@ -64,17 +64,6 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
     const status = this.selectedFilter === 'Todos' ? null : this.filterToStatus(this.selectedFilter);
 
-    // If using mock, map the local mock array into the UI model and short-circuit the HTTP call.
-    if (this.useMock) {
-      // simulate server-side paging
-      const start = this.page * this.size;
-      const pageSlice = this.MOCK_DOCS.slice(start, start + this.size);
-      this.documents = pageSlice.map(d => this.dtoToUi(d));
-      this.totalElements = this.MOCK_DOCS.length;
-      this.loading = false;
-      return;
-    }
-
     this.documentService.getDocuments(this.page, this.size, status)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
