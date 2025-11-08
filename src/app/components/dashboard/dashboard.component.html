@@ -67,7 +67,7 @@
                 </td>
 
                 <td class="table-td">{{ document.type }}</td>
-                <td class="table-td">{{ document.uploadDate }}</td>
+                <td class="table-td">{{ document.uploadDate | date: 'dd/MM/yyyy HH:mm' }}</td>
 
                 <td class="table-td">
                   <span [ngClass]="getStatusClass(document.status)">

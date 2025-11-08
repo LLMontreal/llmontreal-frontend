@@ -12,7 +12,7 @@ interface UiDocument {
   id: number;
   name: string;
   type: string;
-  uploadDate: string;
+  uploadDate: Date;
   status: DocumentStatus;
   icon: string;
 }
@@ -30,6 +30,7 @@ export class DashboardComponent implements OnInit {
 
   selectedFilter: string = 'Todos';
   documents: UiDocument[] = [];
+  
   loading = false;
   page = 0;
   size = 10;
@@ -52,7 +53,8 @@ export class DashboardComponent implements OnInit {
       id: dto.id,
       name: dto.fileName,
       type: dto.fileType,
-      uploadDate: dto.createdAt, 
+      // normalize to Date so Angular date pipe formats consistently
+      uploadDate: new Date(dto.createdAt), 
       status: dto.status,
       icon: this.fileTypeToIcon(dto.fileType)
     };
@@ -61,6 +63,17 @@ export class DashboardComponent implements OnInit {
   fetchDocuments(): void {
     this.loading = true;
     const status = this.selectedFilter === 'Todos' ? null : this.filterToStatus(this.selectedFilter);
+
+    // If using mock, map the local mock array into the UI model and short-circuit the HTTP call.
+    if (this.useMock) {
+      // simulate server-side paging
+      const start = this.page * this.size;
+      const pageSlice = this.MOCK_DOCS.slice(start, start + this.size);
+      this.documents = pageSlice.map(d => this.dtoToUi(d));
+      this.totalElements = this.MOCK_DOCS.length;
+      this.loading = false;
+      return;
+    }
 
     this.documentService.getDocuments(this.page, this.size, status)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -107,6 +120,11 @@ export class DashboardComponent implements OnInit {
       default:
         return 'status-badge status-default';
     }
+  }
+
+  // trackBy to ensure Angular can track rows by document id and render updates efficiently
+  trackByDocument(index: number, item: UiDocument): number {
+    return item.id;
   }
 
   onPageChange(event: PageEvent): void {
