@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DocumentDTO, DocumentStatus } from '../../models/document.model';
 import { DocumentService } from '../../services/document.service';
+import { FileTypePipe } from '../../pipes/file-type.pipe';
 
 interface UiDocument {
   id: number;
@@ -20,7 +21,7 @@ interface UiDocument {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatPaginatorModule, MatButtonModule, RouterModule],
+  imports: [CommonModule, MatIconModule, MatPaginatorModule, MatButtonModule, RouterModule, FileTypePipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

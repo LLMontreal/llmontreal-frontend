@@ -164,30 +164,31 @@ button.primary-btn.mat-mdc-button:hover {
 	color: rgba(var(--color-primary-rgb), 0.8);
 }
 
+.table-th:last-child,
+.table-td:last-child {
+	text-align: center;
+}
+.table-td:last-child .action-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+}
+.table-td:last-child .action-link mat-icon {
+	font-size: 1.25rem;
+	line-height: 1;
+}
+
 .paginator-spacing { margin-top: 1rem; }
 .paginator-wrapper { display: flex; justify-content: flex-end; padding-top: 0.25rem; }
 @media (max-width: 640px) {
 	.paginator-wrapper { justify-content: center; }
 }
 
-.action-link mat-icon {
-		color: var(--color-primary);
-		transition: color 0.25s ease;
-}
-
-.table-td .action-link {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	height: 100%;
-	padding: 0;
-}
-.table-td .action-link mat-icon {
-	margin: 0;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+action-link mat-icon {
+	color: var(--color-primary);
+	transition: color 0.25s ease;
 }
 
 /* Responsive mobile & tablet */

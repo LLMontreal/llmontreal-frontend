@@ -1,24 +1,23 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs'; 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '../../environments/environment';
 import { DocumentDTO, DocumentStatus, Page } from '../models/document.model';
-import { DocumentUploadResponse } from '../models/document-upload-response.model';
 
 @Injectable({
-  providedIn: 'root',
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class DocumentService {
-  private http = inject(HttpClient);
-  private snackBar = inject(MatSnackBar);
   private apiUrl = `${environment.apiUrl}/documents`;
+
+  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
   getDocuments(
     page: number,
     size: number,
-    status?: DocumentStatus | null
+    status?: DocumentStatus | null,
+
   ): Observable<Page<DocumentDTO>> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -26,31 +25,39 @@ export class DocumentService {
 
     if (status) params = params.set('status', status);
 
-    return this.http.get<Page<DocumentDTO>>(this.apiUrl, { params });
+    return this.http.get<Page<DocumentDTO>>(this.apiUrl, { params }).pipe(
+      catchError((err: any) => this.handleError('Ao buscar documentos', err))
+    );
   }
 
-  uploadDocument(file: File): Observable<HttpEvent<DocumentUploadResponse>> {
-    const formData: FormData = new FormData();
-    formData.append('file', file);
+  uploadDocument(file: File): Observable<HttpEvent<any>> {
+    const form = new FormData();
+    form.append('file', file);
 
-    return this.http.post<DocumentUploadResponse>(`${this.apiUrl}/upload`, formData, {
+    return this.http.post<HttpEvent<any>>(`${this.apiUrl}/upload`, form, {
       reportProgress: true,
-      observe: 'events',
-    });
+      observe: 'events'
+    }).pipe(
+      catchError((err: any) => this.handleError('Ao enviar documento', err))
+    );
   }
 
   getDocumentById(id: number): Observable<DocumentDTO> {
-    return new Observable<DocumentDTO>((observer) => {
-      this.http.get<DocumentDTO>(`${this.apiUrl}/${id}`).subscribe({
-        next: (doc) => observer.next(doc),
-        error: () => {
-          this.snackBar.open(`Erro ao buscar documento ${id}`, 'Fechar', {
-            duration: 3000,
-          });
-          observer.complete();
-        },
-        complete: () => observer.complete(),
-      });
-    });
+    return this.http.get<DocumentDTO>(`${this.apiUrl}/${id}`).pipe(
+      catchError((err: any) => this.handleError(`Ao buscar documento ${id}`, err))
+    );
   }
+  
+  private handleError(message: string, err: any) {
+    // keep console for debugging
+    console.error(`❌ ${message}:`, err);
+    // show user-visible feedback
+    try {
+      this.snackBar.open(`${message}. Veja o console para detalhes.`, 'Fechar', { duration: 4000 });
+    } catch (e) {
+      // snackBar might not be available in some test environments; ignore
+    }
+    return throwError(() => err);
+  }
+
 }

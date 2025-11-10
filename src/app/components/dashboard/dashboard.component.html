@@ -66,7 +66,7 @@
                   <span class="file-name">{{ document.name }}</span>
                 </td>
 
-                <td class="table-td">{{ document.type }}</td>
+                <td class="table-td">{{ document.type | fileType }}</td>
                 <td class="table-td">{{ document.uploadDate | date: 'dd/MM/yyyy HH:mm' }}</td>
 
                 <td class="table-td">

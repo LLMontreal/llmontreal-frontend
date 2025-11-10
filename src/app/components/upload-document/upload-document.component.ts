@@ -8,6 +8,7 @@ type Status =
   | 'IDLE'
   | 'READY'
   | 'UPLOADING'
+  | 'PROCESSING'
   | 'SUCCESS'
   | 'ERROR'
   | 'CANCELLED';
@@ -28,27 +29,14 @@ export class UploadDocumentComponent {
 
   isDragging = false;
 
-  private allowedMimeTypes = [
+  private allowed = [
     'application/pdf',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'image/png',
     'image/jpeg',
     'text/plain',
-    'application/zip',
-    'application/x-zip-compressed',
-    'multipart/x-zip',
-    'application/x-compressed',
   ];
   private maxSizeBytes = 25 * 1024 * 1024; // 25MB
-  private allowedExtensions = [
-    'pdf',
-    'docx',
-    'png',
-    'jpg',
-    'jpeg',
-    'txt',
-    'zip',
-  ];
 
   constructor(private documentService: DocumentService) {}
 
@@ -89,21 +77,12 @@ export class UploadDocumentComponent {
   }
 
   private handleSelectedFile(file: File) {
-    const ext = file.name.split('.').pop()?.toLowerCase() || '';
-
-    const mimeOk =
-      this.allowedMimeTypes.includes(file.type) ||
-      (file.type === '' && ext === 'zip');
-
-    const extOk = this.allowedExtensions.includes(ext);
-
-    if (!mimeOk || !extOk) {
+    if (!this.allowed.includes(file.type)) {
       this.setError(
-        `Tipo de arquivo inválido. (Permitidos: PDF, DOCX, PNG, JPG, TXT, ZIP)`
+        `Tipo de arquivo inválido. (Permitidos: PDF, DOCX, PNG, JPG, TXT)`
       );
       return;
     }
-
     if (file.size > this.maxSizeBytes) {
       this.setError(`O arquivo ultrapassa o limite de 25MB.`);
       return;
@@ -114,6 +93,7 @@ export class UploadDocumentComponent {
     this.progress = 0;
     this.uploadFile();
   }
+
   uploadFile() {
     if (!this.selectedFile) return;
 
@@ -124,23 +104,21 @@ export class UploadDocumentComponent {
     this.uploadSub = this.documentService
       .uploadDocument(this.selectedFile)
       .subscribe({
-        next: (event) => {
+        next: (event: HttpEvent<any>) => {
           if (event.type === HttpEventType.UploadProgress) {
-            const total = event.total ?? this.selectedFile!.size;
-            this.progress = Math.round((event.loaded / total) * 100);
+            if (event.total) {
+              this.progress = Math.round(100 * (event.loaded / event.total));
+            }
           } else if (event.type === HttpEventType.Response) {
-            this.status = 'SUCCESS';
-            this.statusMessage = 'Upload concluído com sucesso!';
+            this.status = 'PROCESSING';
+            this.statusMessage = 'Upload concluído. Processando documento...';
             this.progress = 100;
             this.selectedFile = undefined;
-            console.log('Resposta do backend:', event.body);
           }
         },
         error: (err) => {
           console.error(err);
-          const backendMsg =
-            err.error?.message || 'Ocorreu um erro ao enviar o arquivo.';
-          this.setError(backendMsg);
+          this.setError('Ocorreu um erro ao enviar o arquivo.');
         },
       });
   }
@@ -163,8 +141,5 @@ export class UploadDocumentComponent {
     this.statusMessage = msg;
     this.progress = 0;
     this.selectedFile = undefined;
-  }
-  ngOnDestroy(): void {
-    this.uploadSub?.unsubscribe();
   }
 }
