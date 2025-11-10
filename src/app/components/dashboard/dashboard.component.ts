@@ -53,7 +53,6 @@ export class DashboardComponent implements OnInit {
       id: dto.id,
       name: dto.fileName,
       type: dto.fileType,
-      // normalize to Date so Angular date pipe formats consistently
       uploadDate: new Date(dto.createdAt), 
       status: dto.status,
       icon: this.fileTypeToIcon(dto.fileType)
@@ -111,7 +110,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // trackBy to ensure Angular can track rows by document id and render updates efficiently
   trackByDocument(index: number, item: UiDocument): number {
     return item.id;
   }

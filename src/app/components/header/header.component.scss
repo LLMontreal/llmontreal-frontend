@@ -53,7 +53,7 @@ body.dark .main-header {
 }
 
 body.dark .mobile-menu-button {
-  color: #ffffff; /* Ícone do menu branco no modo escuro */
+  color: #ffffff; 
 }
 
 @media (min-width: 768px) {
@@ -138,13 +138,12 @@ body.dark .header-nav {
   gap: 0.5rem;
 }
 
-/* ✅ Modo escuro com menu mobile branco e links visíveis */
 body.dark .menu-open .header-nav {
   background: #ffffff;
   border-bottom-color: var(--color-border-light);
 
   a {
-    color: #000000; /* texto preto sobre fundo branco */
+    color: #000000; 
 
     &:hover {
       background-color: rgba(0, 0, 0, 0.05);
@@ -152,7 +151,6 @@ body.dark .menu-open .header-nav {
   }
 }
 
-/* Toggle do tema */
 .theme-toggle {
   background: none;
   border: 1px solid var(--color-border-light);
@@ -226,7 +224,6 @@ body.dark .theme-toggle {
   }
 }
 
-/* Menu mobile visível no modo escuro */
 .menu-open .header-nav {
   display: flex;
   flex-direction: column;
