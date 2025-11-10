@@ -8,6 +8,7 @@ import { DocumentUploadResponse } from '../models/document-upload-response.model
 
 @Injectable({
   providedIn: 'root',
+  providedIn: 'root',
 })
 export class DocumentService {
   private http = inject(HttpClient);
