@@ -31,6 +31,47 @@ export class DashboardComponent implements OnInit {
   selectedFilter: string = 'Todos';
   documents: UiDocument[] = [];
   
+  // Toggle this to false to use real backend data
+  useMock = true;
+  private MOCK_DOCS: DocumentDTO[] = [
+    {
+      id: 1,
+      status: DocumentStatus.COMPLETED,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      fileName: 'Contrato_Montreal.pdf',
+      fileType: 'application/pdf',
+      summary: null
+    },
+    {
+      id: 2,
+      status: DocumentStatus.PROCESSING,
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+      updatedAt: new Date().toISOString(),
+      fileName: 'Relatorio_Q3.docx',
+      fileType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      summary: null
+    },
+    {
+      id: 3,
+      status: DocumentStatus.FAILED,
+      createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+      updatedAt: new Date().toISOString(),
+      fileName: 'Apresentacao.pptx',
+      fileType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      summary: null
+    },
+    {
+      id: 4,
+      status: DocumentStatus.COMPLETED,
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
+      updatedAt: new Date().toISOString(),
+      fileName: 'Resumo.txt',
+      fileType: 'text/plain',
+      summary: null
+    }
+  ];
+
   loading = false;
   page = 0;
   size = 10;
@@ -63,6 +104,16 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
     const status = this.selectedFilter === 'Todos' ? null : this.filterToStatus(this.selectedFilter);
 
+    // If using mock, map the local mock array into the UI model and short-circuit the HTTP call.
+    if (this.useMock) {
+      const start = this.page * this.size;
+      const pageSlice = this.MOCK_DOCS.slice(start, start + this.size);
+      this.documents = pageSlice.map(d => this.dtoToUi(d));
+      this.totalElements = this.MOCK_DOCS.length;
+      this.loading = false;
+      return;
+    }
+
     this.documentService.getDocuments(this.page, this.size, status)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -76,6 +127,7 @@ export class DashboardComponent implements OnInit {
           this.loading = false;
         }
       });
+
   }
 
   onFilterChange(filter: string): void {

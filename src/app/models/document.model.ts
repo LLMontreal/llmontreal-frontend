@@ -1,9 +1,9 @@
 
 export enum DocumentStatus {
-  PENDING = 'PENDING',
-  PROCESSING = 'PROCESSING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED'
+  PENDING = 'PENDENTE',
+  PROCESSING = 'PROCESSANDO',
+  COMPLETED = 'COMPLETO',
+  FAILED = 'ERRO'
 }
 
 export interface DocumentDTO {
