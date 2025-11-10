@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpEvent } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs'; 
+import { environment } from '../../environments/environment';
 import { DocumentDTO, DocumentStatus, Page } from '../models/document.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentService {
-  private apiUrl = '${environment.apiUrl}/documents'; 
+  private apiUrl = `${environment.apiUrl}/documents`;
 
   constructor(private http: HttpClient) {}
 
