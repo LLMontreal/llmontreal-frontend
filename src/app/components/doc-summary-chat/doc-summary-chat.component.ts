@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
 import { ChatService } from '@services/chat.service';
 import { ChatMessage } from '@shared/models/chat-message';
 
@@ -63,16 +61,18 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
 
     this.isSummaryLoading = true;
     this.summaryError = null;
-    const mockSummary = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque varius, dui sed scelerisque sollicitudin, tellus sapien ultricies dolor, vitae finibus libero lorem vitae ipsum. Phasellus volutpat eget mauris ut scelerisque. Ut lectus dolor, hendrerit et fringilla sed, imperdiet nec metus. Aliquam tristique sed massa sit amet sollicitudin. Curabitur ipsum nibh, bibendum sit amet facilisis sit amet, rutrum et dui. Morbi congue elit id arcu feugiat, quis commodo ipsum commodo. Mauris sagittis purus sit amet facilisis fermentum. Ut lobortis sollicitudin erat, condimentum suscipit purus efficitur quis. Mauris faucibus id eros congue cursus.
 
-Aliquam fermentum, neque quis auctor mollis, lectus turpis ornare turpis, vitae semper tortor leo vel ipsum. Mauris sit amet rutrum orci, egestas sodales ante. Integer congue placerat ante, sit amet bibendum turpis malesuada ac. Aliquam porta, est sit amet pharetra`;
-
-    // Simula uma chamada de API com 1 segundo de atraso
-    of(mockSummary).pipe(delay(1000)).subscribe(data => {
-      this.summaryText = data;
-      this.isSummaryLoading = false;
-
-      setTimeout(() => this.checkSummaryOverflow());
+    this.chatService.getSummary(this.documentId).subscribe({
+      next: (data) => {
+        this.summaryText = data;
+        this.isSummaryLoading = false;
+        setTimeout(() => this.checkSummaryOverflow());
+      },
+      error: (err) => {
+        console.error('Falha ao carregar o resumo:', err);
+        this.summaryError = 'Não foi possível carregar o resumo do documento.';
+        this.isSummaryLoading = false;
+      }
     });
   }
 
@@ -100,7 +100,7 @@ Aliquam fermentum, neque quis auctor mollis, lectus turpis ornare turpis, vitae 
   }
 
   sendMessage(): void {
-    if (!this.newMessage.trim()) return;
+    if (!this.newMessage.trim() || !this.documentId) return;
 
     this.messages.push({ sender: 'Você', text: this.newMessage });
     const currentMessage = this.newMessage;
@@ -109,10 +109,21 @@ Aliquam fermentum, neque quis auctor mollis, lectus turpis ornare turpis, vitae 
 
     this.scrollToBottom(true);
 
-    this.chatService.getResponse(this.documentId, currentMessage).subscribe((iaResponse: ChatMessage) => {
-      this.messages.push(iaResponse);
-      this.isLoading = false;
-      this.scrollToBottom(true);
+    this.chatService.getResponse(this.documentId, currentMessage).subscribe({
+        next: (iaResponse) => {
+            this.messages.push(iaResponse);
+            this.isLoading = false;
+            this.scrollToBottom(true);
+        },
+        error: (err) => {
+            console.error('Falha ao obter resposta da IA:', err);
+            this.messages.push({
+                sender: 'IA',
+                text: 'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.'
+            });
+            this.isLoading = false;
+            this.scrollToBottom(true);
+        }
     });
   }
 

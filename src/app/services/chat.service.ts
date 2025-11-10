@@ -1,26 +1,45 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { ChatMessage } from '@shared/models/chat-message';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
 
-  constructor() { }
+  private apiUrl = environment.apiUrl;
 
-  getResponse(documentId: string | null, prompt: string): Observable<ChatMessage> {
-    console.log(`CHAMADA DE SERVIÇO: Buscando resposta para o doc [${documentId}] com a pergunta: "${prompt}"`);
+  constructor(private http: HttpClient) { }
 
-    // Resposta mockada 
-    const response: ChatMessage = {
-      sender: 'IA',
-      text: `Analisando o documento ${documentId}, a principal conclusão é que a IA tem o potencial de automatizar tarefas repetitivas, liberando os seres humanos para se concentrarem em atividades mais criativas e estratégicas.`,
-      citation: '"... a automação via IA não visa substituir, mas sim aumentar a capacidade humana." (p. 15)'
+  getSummary(documentId: string): Observable<string> {
+    const url = `${this.apiUrl}/summary/${documentId}`;
+    return this.http.get(url, { responseType: 'text' })
+      .pipe(catchError(this.handleError));
+  }
+
+  getResponse(documentId: string, prompt: string): Observable<ChatMessage> {
+    const requestBody = {
+      model: 'deepseek-r1:1.5b',
+      prompt: prompt,
+      stream: false
     };
 
-    // Simula a latência da rede (1.5 segundos)
-    return of(response).pipe(delay(1500));
+    const url = `${this.apiUrl}/chat/${documentId}`;
+
+    return this.http.post<any>(url, requestBody).pipe(
+      map(res => ({
+        sender: res.author === 'MODEL' ? 'IA' : res.author,
+        text: res.response
+      })),
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: any): Observable<never> {
+    console.error('Ocorreu um erro na API:', error);
+    return throwError(() => new Error('Falha na comunicação com o servidor. Tente novamente mais tarde.'));
   }
 }
