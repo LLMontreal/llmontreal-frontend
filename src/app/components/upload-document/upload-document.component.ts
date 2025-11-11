@@ -28,14 +28,27 @@ export class UploadDocumentComponent {
 
   isDragging = false;
 
-  private allowed = [
+  private allowedMimeTypes = [
     'application/pdf',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'image/png',
     'image/jpeg',
     'text/plain',
+    'application/zip',
+    'application/x-zip-compressed',
+    'multipart/x-zip',
+    'application/x-compressed',
   ];
   private maxSizeBytes = 25 * 1024 * 1024; // 25MB
+  private allowedExtensions = [
+    'pdf',
+    'docx',
+    'png',
+    'jpg',
+    'jpeg',
+    'txt',
+    'zip',
+  ];
 
   constructor(private documentService: DocumentService) {}
 
@@ -76,12 +89,21 @@ export class UploadDocumentComponent {
   }
 
   private handleSelectedFile(file: File) {
-    if (!this.allowed.includes(file.type)) {
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+
+    const mimeOk =
+      this.allowedMimeTypes.includes(file.type) ||
+      (file.type === '' && ext === 'zip');
+
+    const extOk = this.allowedExtensions.includes(ext);
+
+    if (!mimeOk || !extOk) {
       this.setError(
-        `Tipo de arquivo inválido. (Permitidos: PDF, DOCX, PNG, JPG, TXT)`
+        `Tipo de arquivo inválido. (Permitidos: PDF, DOCX, PNG, JPG, TXT, ZIP)`
       );
       return;
     }
+
     if (file.size > this.maxSizeBytes) {
       this.setError(`O arquivo ultrapassa o limite de 25MB.`);
       return;
@@ -102,7 +124,7 @@ export class UploadDocumentComponent {
     this.uploadSub = this.documentService
       .uploadDocument(this.selectedFile)
       .subscribe({
-        next: (event: HttpEvent<any>) => {
+        next: (event) => {
           if (event.type === HttpEventType.UploadProgress) {
             const total = event.total ?? this.selectedFile!.size;
             this.progress = Math.round((event.loaded / total) * 100);
@@ -116,7 +138,9 @@ export class UploadDocumentComponent {
         },
         error: (err) => {
           console.error(err);
-          this.setError('Ocorreu um erro ao enviar o arquivo.');
+          const backendMsg =
+            err.error?.message || 'Ocorreu um erro ao enviar o arquivo.';
+          this.setError(backendMsg);
         },
       });
   }
@@ -140,7 +164,7 @@ export class UploadDocumentComponent {
     this.progress = 0;
     this.selectedFile = undefined;
   }
-    ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.uploadSub?.unsubscribe();
   }
 }
