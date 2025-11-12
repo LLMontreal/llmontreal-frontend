@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
   private documentService = inject(DocumentService);
   private destroyRef = inject(DestroyRef);
 
-  selectedFilter: string = 'Todos';
+  selectedFilter: 'PROCESSING' | 'COMPLETED' | 'FAILED' | undefined;
   documents: UiDocument[] = [];
   
   loading = false;
@@ -62,7 +62,7 @@ export class DashboardComponent implements OnInit {
 
   fetchDocuments(): void {
     this.loading = true;
-    const status = this.selectedFilter === 'Todos' ? null : this.filterToStatus(this.selectedFilter);
+    const status = this.selectedFilter;
 
     this.documentService.getDocuments(this.page, this.size, status)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -72,31 +72,19 @@ export class DashboardComponent implements OnInit {
           this.totalElements = page.totalElements;
           this.loading = false;
         },
-        error: (err) => {
+        error: () => {
           this.documents = [];
           this.loading = false;
         }
       });
   }
 
-  onFilterChange(filter: string): void {
+  onFilterChange(filter?: 'PROCESSING' | 'COMPLETED' | 'FAILED'): void {
     this.selectedFilter = filter;
     this.page = 0;
     this.fetchDocuments();
   }
 
-  private filterToStatus(filter: string): string | null {
-    switch (filter) {
-      case 'Pronto':
-        return 'COMPLETED';
-      case 'Processando':
-        return 'PROCESSING';
-      case 'Erro':
-        return 'FAILED';
-      default:
-        return null;
-    }
-  }
 
   getStatusClass(status: string): string {
     switch (status) {
@@ -113,10 +101,6 @@ export class DashboardComponent implements OnInit {
 
   translateStatus(status: string): string {
     return translateDocumentStatus(status);
-  }
-
-  trackByDocument(index: number, item: UiDocument): number {
-    return item.id;
   }
 
   onPageChange(event: PageEvent): void {
