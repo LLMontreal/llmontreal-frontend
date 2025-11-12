@@ -22,36 +22,36 @@ describe('DocumentService', () => {
   });
 
   it('should fetch documents with page and size params', (done) => {
-    const fakeResponse = {
-      content: [] as DocumentDTO[],
-      totalPages: 0,
-      totalElements: 0,
-      size: 10,
-      number: 0,
-      numberOfElements: 0,
-      first: true,
-      last: true,
-      empty: true
-    };
+  const fakeResponse = {
+    content: [] as DocumentDTO[],
+    totalPages: 0,
+    totalElements: 0,
+    size: 10,
+    number: 0,
+    numberOfElements: 0,
+    first: true,
+    last: true,
+    empty: true
+  };
 
-    service.getDocuments(0, 10, undefined).subscribe(res => {
-      expect(res).toEqual(fakeResponse);
-      done();
-    });
-
-    const req = httpMock.expectOne(r => r.url.includes('/documents') && r.params.get('page') === '0' && r.params.get('size') === '10');
-    expect(req.request.method).toBe('GET');
-    req.flush(fakeResponse);
+  service.getDocuments(0, 10, null).subscribe(res => { 
+    expect(res).toEqual(fakeResponse);
+    done();
   });
 
-  it('should return empty page on error', (done) => {
-    service.getDocuments(0, 5).subscribe(res => {
-      expect(res.content).toEqual([]);
-      expect(res.totalElements).toBe(0);
-      done();
-    });
+  const req = httpMock.expectOne(r => r.url.includes('/documents') && r.params.get('page') === '0' && r.params.get('size') === '10');
+  expect(req.request.method).toBe('GET');
+  req.flush(fakeResponse);
+});
 
-    const req = httpMock.expectOne(r => r.url.includes('/documents'));
-    req.error(new ErrorEvent('network'));
+it('should return empty page on error', (done) => {
+  service.getDocuments(0, 5, null).subscribe(res => { 
+    expect(res.content).toEqual([]);
+    expect(res.totalElements).toBe(0);
+    done();
   });
+
+  const req = httpMock.expectOne(r => r.url.includes('/documents'));
+  req.error(new ErrorEvent('network'));
+});
 });
