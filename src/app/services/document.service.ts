@@ -30,7 +30,7 @@ export class DocumentService {
     form.append('file', file);
 
     return this.http
-      .post<HttpEvent<any>>(`${this.apiUrl}/upload`, form, {
+      .post<HttpEvent<any>>(`${this.apiUrl}`, form, {
         reportProgress: true,
         observe: 'events',
       })
