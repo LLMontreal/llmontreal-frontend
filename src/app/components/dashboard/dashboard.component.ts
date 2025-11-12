@@ -73,7 +73,6 @@ export class DashboardComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.documents = [];
           this.loading = false;
         }
       });
