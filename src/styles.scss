@@ -186,3 +186,15 @@ body.dark footer {
 body.dark .montreal-logo {
   filter: brightness(0) invert(1);
 }
+
+.mat-mdc-button-persistent-ripple {
+  opacity: 0;
+}
+.custom-snackbar {
+  background-color: var(--color-background-light, --color-background-dark);
+}
+.cdk-overlay-container .mat-mdc-select-panel {
+  background-color: var(--color-background-light,--color-background-dark); 
+}
+
+

@@ -9,30 +9,23 @@
     </div>
 
     <div class="dash-actions">
-      <button
-        class="btn-filter"
-        [ngClass]="selectedFilter === 'Todos' ? 'btn-filter--active' : 'btn-filter--inactive'"
+      <button class="btn-filter" [ngClass]="selectedFilter === 'Todos' ? 'btn-filter--active' : 'btn-filter--inactive'"
         (click)="onFilterChange('Todos')">
         <p class="filter-label">Todos</p>
       </button>
 
-      <button
-        class="btn-filter"
+      <button class="btn-filter"
         [ngClass]="selectedFilter === 'Processando' ? 'btn-filter--active' : 'btn-filter--inactive'"
         (click)="onFilterChange('Processando')">
         <p class="filter-label">Processando</p>
       </button>
 
-      <button
-        class="btn-filter"
-        [ngClass]="selectedFilter === 'Pronto' ? 'btn-filter--active' : 'btn-filter--inactive'"
+      <button class="btn-filter" [ngClass]="selectedFilter === 'Pronto' ? 'btn-filter--active' : 'btn-filter--inactive'"
         (click)="onFilterChange('Pronto')">
         <p class="filter-label">Pronto</p>
       </button>
 
-      <button
-        class="btn-filter"
-        [ngClass]="selectedFilter === 'Erro' ? 'btn-filter--active' : 'btn-filter--inactive'"
+      <button class="btn-filter" [ngClass]="selectedFilter === 'Erro' ? 'btn-filter--active' : 'btn-filter--inactive'"
         (click)="onFilterChange('Erro')">
         <p class="filter-label">Erro</p>
       </button>
@@ -53,39 +46,35 @@
 
           <tbody>
             @for (document of documents; track document.id) {
-              <tr class="table-row">
-                <td class="file-cell">
-                  <mat-icon
-                    [ngClass]="{
+            <tr class="table-row">
+              <td class="file-cell">
+                <mat-icon [ngClass]="{
                       'icon-red': document.icon === 'picture_as_pdf',
                       'icon-blue': document.icon === 'description',
                       'icon-orange': document.icon !== 'picture_as_pdf' && document.icon !== 'description'
                     }">
-                    {{ document.icon }}
-                  </mat-icon>
-                  <span class="file-name">{{ document.name }}</span>
-                </td>
+                  {{ document.icon }}
+                </mat-icon>
+                <span class="file-name">{{ document.name }}</span>
+              </td>
 
-                <td class="table-td">{{ document.type | fileType }}</td>
-                <td class="table-td">{{ document.uploadDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td class="table-td">{{ document.type | fileType }}</td>
+              <td class="table-td">{{ document.uploadDate | date: 'dd/MM/yyyy HH:mm' }}</td>
 
-                <td class="table-td">
-                  <span [ngClass]="getStatusClass(document.status)">
-                    {{ document.status }}
-                  </span>
-                </td>
+              <td class="table-td">
+                <span [ngClass]="getStatusClass(document.status)">
+                  {{ translateStatus(document.status) }}
+                </span>
+              </td>
 
-                <td class="table-td">
-                  <a
-                    class="action-link"
-                    [routerLink]="['/documents', document.id]"
-                    aria-label="Ver Detalhes"
-                    title="Ver Detalhes">
-                    <mat-icon>visibility</mat-icon>
-                  </a>
-                </td>
-              </tr>
-            } 
+              <td class="table-td">
+                <a class="action-link" [routerLink]="['/documents', document.id]" aria-label="Ver Detalhes"
+                  title="Ver Detalhes">
+                  <mat-icon>visibility</mat-icon>
+                </a>
+              </td>
+            </tr>
+            }
           </tbody>
         </table>
       </div>
@@ -93,12 +82,8 @@
 
     <div class="paginator-spacing">
       <div class="paginator-wrapper">
-        <mat-paginator
-          class="app-paginator mat-elevation-z0"
-          [length]="totalElements"
-          [pageSize]="size"
-          [pageSizeOptions]="[5, 10, 25]"
-          (page)="onPageChange($event)">
+        <mat-paginator class="app-paginator mat-elevation-z0" [length]="totalElements" [pageSize]="size"
+          [pageSizeOptions]="[5, 10, 25]" (page)="onPageChange($event)">
         </mat-paginator>
       </div>
     </div>

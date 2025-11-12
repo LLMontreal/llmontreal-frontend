@@ -1,19 +1,24 @@
-
-export enum DocumentStatus {
-  PENDING = 'PENDENTE',
-  PROCESSING = 'PROCESSANDO',
-  COMPLETED = 'COMPLETO',
-  FAILED = 'ERRO'
-}
-
 export interface DocumentDTO {
   id: number;
-  status: DocumentStatus;
-  createdAt: string; 
-  updatedAt: string;
   fileName: string;
   fileType: string;
-  summary: string | null;
+  createdAt: string;
+  status: string;
+}
+
+export function translateDocumentStatus(status: string): string {
+  switch ((status || '').toUpperCase()) {
+    case 'COMPLETED':
+      return 'Pronto';
+    case 'PROCESSING':
+      return 'Processando';
+    case 'FAILED':
+      return 'Erro';
+    case 'PENDING':
+      return 'Pendente';
+    default:
+      return 'Desconhecido';
+  }
 }
 
 export interface Page<T> {

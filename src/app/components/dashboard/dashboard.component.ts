@@ -5,7 +5,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DocumentDTO, DocumentStatus } from '../../models/document.model';
+import { DocumentDTO, translateDocumentStatus } from '../../models/document.model';
 import { DocumentService } from '../../services/document.service';
 import { FileTypePipe } from '../../pipes/file-type.pipe';
 
@@ -14,7 +14,7 @@ interface UiDocument {
   name: string;
   type: string;
   uploadDate: Date;
-  status: DocumentStatus;
+  status: string;
   icon: string;
 }
 
@@ -77,7 +77,6 @@ export class DashboardComponent implements OnInit {
           this.loading = false;
         }
       });
-
   }
 
   onFilterChange(filter: string): void {
@@ -86,30 +85,34 @@ export class DashboardComponent implements OnInit {
     this.fetchDocuments();
   }
 
-  private filterToStatus(filter: string): DocumentStatus | null {
+  private filterToStatus(filter: string): string | null {
     switch (filter) {
       case 'Pronto':
-        return DocumentStatus.COMPLETED;
+        return 'COMPLETED';
       case 'Processando':
-        return DocumentStatus.PROCESSING;
+        return 'PROCESSING';
       case 'Erro':
-        return DocumentStatus.FAILED;
+        return 'FAILED';
       default:
         return null;
     }
   }
 
-  getStatusClass(status: DocumentStatus): string {
+  getStatusClass(status: string): string {
     switch (status) {
-      case DocumentStatus.COMPLETED:
+      case 'COMPLETED':
         return 'status-badge status-pronto';
-      case DocumentStatus.PROCESSING:
+      case 'PROCESSING':
         return 'status-badge status-processando';
-      case DocumentStatus.FAILED:
+      case 'FAILED':
         return 'status-badge status-erro';
       default:
         return 'status-badge status-default';
     }
+  }
+
+  translateStatus(status: string): string {
+    return translateDocumentStatus(status);
   }
 
   trackByDocument(index: number, item: UiDocument): number {
