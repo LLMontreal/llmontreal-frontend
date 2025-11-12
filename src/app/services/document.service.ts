@@ -13,7 +13,7 @@ export class DocumentService {
 
   constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
 
-  getDocuments(page: number, size: number, status: string | null): Observable<Page<DocumentDTO>> {
+  getDocuments(page: number, size: number, status?: string): Observable<Page<DocumentDTO>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
