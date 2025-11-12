@@ -1,17 +1,12 @@
 import { Routes } from '@angular/router';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { UploadDocumentComponent } from './components/upload-document/upload-document.component';
 
 export const routes: Routes = [
-  {
-    path: 'upload',
-    component: UploadDocumentComponent,
-  },
-    { path: '', redirectTo: '/upload', pathMatch: 'full' },
 
-
-  {
-    path: '',
-    redirectTo: '/upload',
-    pathMatch: 'full',
-  },
+	{ path: '', component: UploadDocumentComponent, pathMatch: 'full' },
+	{ path: 'dashboard', component: DashboardComponent },
+	{ path: 'upload-document', component: UploadDocumentComponent },
+	{ path: '**', redirectTo: '' }
 ];
+

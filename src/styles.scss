@@ -1,4 +1,6 @@
-// PALETA
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap");
+
 :root {
   --color-primary: #4A90E2;
   --color-success: #50E3C2;
@@ -19,15 +21,89 @@
   --radius-full: 9999px;
 
   --font-family-display: 'Inter', sans-serif;
+
+  --status-pending-bg: #FEEBC8;
+  --status-pending-color: #92400E;
+  --color-primary-rgb: 74,144,226;
+
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+
+  --space-0: 0rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  --gap-default: var(--space-4);
 }
 
-// MODO ESCURO
+html { font-size: 16px; }
+h1 { font-size: clamp(1.5rem, 1.2rem + 2.5vw, 2.25rem); }
+h2 { font-size: clamp(1.25rem, 1rem + 1.5vw, 1.75rem); }
+h3 { font-size: clamp(1.125rem, 0.9rem + 1vw, 1.25rem); }
+body, input, button, textarea { font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1rem); }
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+  max-width: 100%;
+}
+@media (min-width: var(--bp-sm)) { .container { max-width: 640px; } }
+@media (min-width: var(--bp-md)) { .container { max-width: 768px; } }
+@media (min-width: var(--bp-lg)) { .container { max-width: 1024px; } }
+@media (min-width: var(--bp-xl)) { .container { max-width: 1280px; } }
+
+.layout-center { display: flex; align-items: center; justify-content: center; }
+.layout-between { display: flex; align-items: center; justify-content: space-between; }
+
+.stack { display: flex; flex-direction: column; gap: var(--gap, var(--gap-default)); }
+.stack.row { flex-direction: row; }
+
+.g-1 { gap: var(--space-1); }
+.g-2 { gap: var(--space-2); }
+.g-3 { gap: var(--space-3); }
+.g-4 { gap: var(--space-4); }
+.g-5 { gap: var(--space-5); }
+
+.grid { display: grid; gap: var(--gap, var(--gap-default)); grid-template-columns: repeat(var(--cols,1), 1fr); }
+.cols-1 { --cols: 1; }
+.cols-2 { --cols: 2; }
+.cols-3 { --cols: 3; }
+.cols-4 { --cols: 4; }
+
+@media (min-width: var(--bp-sm)) {
+  .sm-cols-2 { grid-template-columns: repeat(2,1fr); }
+  .sm-cols-3 { grid-template-columns: repeat(3,1fr); }
+}
+@media (min-width: var(--bp-md)) {
+  .md-cols-2 { grid-template-columns: repeat(2,1fr); }
+  .md-cols-3 { grid-template-columns: repeat(3,1fr); }
+}
+@media (min-width: var(--bp-lg)) {
+  .lg-cols-3 { grid-template-columns: repeat(3,1fr); }
+  .lg-cols-4 { grid-template-columns: repeat(4,1fr); }
+}
+
+.hide-sm { display: none; }
+@media (min-width: var(--bp-sm)) { .hide-sm { display: initial; } }
+.show-sm { display: initial; }
+@media (min-width: var(--bp-sm)) { .show-sm { display: none; } }
+
+.media-center { display:flex; align-items:center; justify-content:center; }
+.muted { color: #6B7280; }
+.truncate { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
 .dark {
   --color-background-light: var(--color-background-dark);
   --color-text-light: var(--color-text-dark);
   --color-border-light: var(--color-border-dark);
 }
-
 
 // BASE GLOBAL
 *,
@@ -43,7 +119,6 @@ html, body {
   font-family: var(--font-family-display);
   color: var(--color-text-light);
   transition: background-color 0.3s ease, color 0.3s ease;
-
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -56,7 +131,7 @@ app-root {
 }
 
 .main-content {
-  flex: 1; 
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -66,7 +141,6 @@ body.dark {
   color: var(--color-text-dark);
 }
 
-// TIPOGRAFIA
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.2;
@@ -83,19 +157,16 @@ a {
   text-decoration: none;
   transition: color 0.2s ease;
 }
-
 a:hover {
   color: rgba(74, 144, 226, 0.85);
 }
 
-// CONTAINERS
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
 }
 
-// CABEÇALHO E RODAPÉ
 header, footer {
   border-color: var(--color-border-light);
   border-style: solid;
@@ -108,12 +179,22 @@ body.dark footer {
   border-color: var(--color-border-dark);
 }
 
-// TRANSIÇÃO DE TEMA
 .theme-transition {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-//LOGO MONTREAL MODO ESCURO
 body.dark .montreal-logo {
   filter: brightness(0) invert(1);
 }
+
+.mat-mdc-button-persistent-ripple {
+  opacity: 0;
+}
+.custom-snackbar {
+  background-color: var(--color-background-light, --color-background-dark);
+}
+.cdk-overlay-container .mat-mdc-select-panel {
+  background-color: var(--color-background-light,--color-background-dark); 
+}
+
+

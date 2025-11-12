@@ -1,11 +1,22 @@
-<header class="main-header">
+<header class="main-header" [class.menu-open]="isMenuOpen">
   <div class="header-container">
     <a routerLink="/" class="logo">
       <img src="assets/logo-LlMontreal.svg" alt="LlMontreal logo" class="logo-icon" />
       <span class="brand-name">LLMontreal</span>
     </a>
-  </div>
-      <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Ativar modo claro' : 'Ativar modo escuro'">
-      <i class="fas" [ngClass]="isDark ? 'fa-sun' : 'fa-moon'"></i>
+      <nav class="header-nav" aria-label="Primary Navigation">
+        <a routerLink="/upload" routerLinkActive="active-link">Upload de Documento</a>
+        <a routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a>
+      </nav>
+    </div>
+
+    <div class="header-right">
+      <button type="button" class="mobile-menu-button" aria-label="Abrir menu" aria-expanded="{{isMenuOpen}}" (click)="toggleMenu()">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+        <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark() ? 'Ativar modo claro' : 'Ativar modo escuro'">
+      <i class="fas" [ngClass]="isDark() ? 'fa-sun' : 'fa-moon'"></i>
     </button>
+    </div>
 </header>

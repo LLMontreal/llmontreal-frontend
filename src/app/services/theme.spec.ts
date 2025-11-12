@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-
 import { ThemeService } from './theme.service';
 
-describe('Theme', () => {
+describe('ThemeService', () => {
   let service: ThemeService;
 
   beforeEach(() => {

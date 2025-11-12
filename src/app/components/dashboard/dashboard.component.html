@@ -1,0 +1,88 @@
+<main>
+  <div class="container">
+    <div class="layout-between header-row">
+      <h1>Dashboard de Documentos</h1>
+      <button mat-raised-button [routerLink]="['/upload-document']" class="primary-btn">
+        <mat-icon>upload_file</mat-icon>
+        <span class="truncate">Enviar Novo Documento</span>
+      </button>
+    </div>
+
+    <div class="dash-actions">
+      <button class="btn-filter" [ngClass]="!selectedFilter ? 'btn-filter--active' : 'btn-filter--inactive'"
+        (click)="onFilterChange()">
+        <p class="filter-label">Todos</p>
+      </button>
+
+      <button class="btn-filter"
+        [ngClass]="selectedFilter === 'PROCESSING' ? 'btn-filter--active' : 'btn-filter--inactive'"
+        (click)="onFilterChange('PROCESSING')">
+        <p class="filter-label">Processando</p>
+      </button>
+
+      <button class="btn-filter"
+        [ngClass]="selectedFilter === 'COMPLETED' ? 'btn-filter--active' : 'btn-filter--inactive'"
+        (click)="onFilterChange('COMPLETED')">
+        <p class="filter-label">Pronto</p>
+      </button>
+
+      <button class="btn-filter" [ngClass]="selectedFilter === 'FAILED' ? 'btn-filter--active' : 'btn-filter--inactive'"
+        (click)="onFilterChange('FAILED')">
+        <p class="filter-label">Erro</p>
+      </button>
+    </div>
+
+    <div class="table-root">
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead>
+            <tr class="table-head">
+              <th class="table-th">Nome do Arquivo</th>
+              <th class="table-th">Tipo</th>
+              <th class="table-th">Data de Upload</th>
+              <th class="table-th">Status</th>
+              <th class="table-th">Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (document of documents; track document.id) {
+            <tr class="table-row">
+              <td class="file-cell">
+                <mat-icon [ngClass]="{
+                      'icon-red': document.icon === 'picture_as_pdf',
+                      'icon-blue': document.icon === 'description',
+                      'icon-orange': document.icon !== 'picture_as_pdf' && document.icon !== 'description'
+                    }">
+                  {{ document.icon }}
+                </mat-icon>
+                <span class="file-name">{{ document.name }}</span>
+              </td>
+
+              <td class="table-td">{{ document.type | fileType }}</td>
+              <td class="table-td">{{ document.uploadDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+
+              <td class="table-td">
+                <span [ngClass]="getStatusClass(document.status)">
+                  {{ translateStatus(document.status) }}
+                </span>
+              </td>
+
+              <td class="table-td">
+                <a class="action-link" [routerLink]="['/documents', document.id]" aria-label="Ver Detalhes"
+                  title="Ver Detalhes">
+                  <mat-icon>visibility</mat-icon>
+                </a>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <mat-paginator [length]="totalElements" [pageSize]="size" [pageSizeOptions]="[5, 10, 25]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+</main>
