@@ -110,7 +110,7 @@ export class UploadDocumentComponent {
               this.progress = Math.round(100 * (event.loaded / event.total));
             }
           } else if (event.type === HttpEventType.Response) {
-            this.status = 'PROCESSING';
+            this.status = 'SUCCESS';
             this.statusMessage = 'Upload concluído. Processando documento...';
             this.progress = 100;
             this.selectedFile = undefined;
