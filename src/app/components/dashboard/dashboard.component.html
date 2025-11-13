@@ -2,32 +2,60 @@
   <div class="container">
     <div class="layout-between header-row">
       <h1>Dashboard de Documentos</h1>
-      <button mat-raised-button [routerLink]="['/upload-document']" class="primary-btn">
+      <button
+        mat-raised-button
+        [routerLink]="['/upload-document']"
+        class="primary-btn"
+      >
         <mat-icon>upload_file</mat-icon>
         <span class="truncate">Enviar Novo Documento</span>
       </button>
     </div>
 
     <div class="dash-actions">
-      <button class="btn-filter" [ngClass]="!selectedFilter ? 'btn-filter--active' : 'btn-filter--inactive'"
-        (click)="onFilterChange()">
+      <button
+        class="btn-filter"
+        [ngClass]="
+          !selectedFilter ? 'btn-filter--active' : 'btn-filter--inactive'
+        "
+        (click)="onFilterChange()"
+      >
         <p class="filter-label">Todos</p>
       </button>
 
-      <button class="btn-filter"
-        [ngClass]="selectedFilter === 'PROCESSING' ? 'btn-filter--active' : 'btn-filter--inactive'"
-        (click)="onFilterChange('PROCESSING')">
+      <button
+        class="btn-filter"
+        [ngClass]="
+          selectedFilter === 'PROCESSING'
+            ? 'btn-filter--active'
+            : 'btn-filter--inactive'
+        "
+        (click)="onFilterChange('PROCESSING')"
+      >
         <p class="filter-label">Processando</p>
       </button>
 
-      <button class="btn-filter"
-        [ngClass]="selectedFilter === 'COMPLETED' ? 'btn-filter--active' : 'btn-filter--inactive'"
-        (click)="onFilterChange('COMPLETED')">
+      <button
+        class="btn-filter"
+        [ngClass]="
+          selectedFilter === 'COMPLETED'
+            ? 'btn-filter--active'
+            : 'btn-filter--inactive'
+        "
+        (click)="onFilterChange('COMPLETED')"
+      >
         <p class="filter-label">Pronto</p>
       </button>
 
-      <button class="btn-filter" [ngClass]="selectedFilter === 'FAILED' ? 'btn-filter--active' : 'btn-filter--inactive'"
-        (click)="onFilterChange('FAILED')">
+      <button
+        class="btn-filter"
+        [ngClass]="
+          selectedFilter === 'FAILED'
+            ? 'btn-filter--active'
+            : 'btn-filter--inactive'
+        "
+        (click)="onFilterChange('FAILED')"
+      >
         <p class="filter-label">Erro</p>
       </button>
     </div>
@@ -49,18 +77,24 @@
             @for (document of documents; track document.id) {
             <tr class="table-row">
               <td class="file-cell">
-                <mat-icon [ngClass]="{
-                      'icon-red': document.icon === 'picture_as_pdf',
-                      'icon-blue': document.icon === 'description',
-                      'icon-orange': document.icon !== 'picture_as_pdf' && document.icon !== 'description'
-                    }">
+                <mat-icon
+                  [ngClass]="{
+                    'icon-red': document.icon === 'picture_as_pdf',
+                    'icon-blue': document.icon === 'description',
+                    'icon-orange':
+                      document.icon !== 'picture_as_pdf' &&
+                      document.icon !== 'description'
+                  }"
+                >
                   {{ document.icon }}
                 </mat-icon>
                 <span class="file-name">{{ document.name }}</span>
               </td>
 
               <td class="table-td">{{ document.type | fileType }}</td>
-              <td class="table-td">{{ document.uploadDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td class="table-td">
+                {{ document.uploadDate | date : "dd/MM/yyyy HH:mm" }}
+              </td>
 
               <td class="table-td">
                 <span [ngClass]="getStatusClass(document.status)">
@@ -69,9 +103,22 @@
               </td>
 
               <td class="table-td">
-                <a class="action-link" [routerLink]="['/documents', document.id]" aria-label="Ver Detalhes"
-                  title="Ver Detalhes">
-                  <mat-icon>visibility</mat-icon>
+                <a
+                  class="action-link"
+                  [routerLink]="['/documents', document.id]"
+                  aria-label="Abrir chat"
+                  title="Abrir chat"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 -960 960 960"
+                    class="icon-chat"
+                  >
+                    <path
+                      d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
+                      fill="currentColor"
+                    />
+                  </svg>
                 </a>
               </td>
             </tr>
@@ -81,8 +128,12 @@
       </div>
     </div>
 
-    <mat-paginator [length]="totalElements" [pageSize]="size" [pageSizeOptions]="[5, 10, 25]"
-      (page)="onPageChange($event)">
+    <mat-paginator
+      [length]="totalElements"
+      [pageSize]="size"
+      [pageSizeOptions]="[5, 10, 25]"
+      (page)="onPageChange($event)"
+    >
     </mat-paginator>
   </div>
 </main>

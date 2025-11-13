@@ -304,3 +304,25 @@ button.primary-btn:hover {
 @media (min-width: 1024px) {
   .paginator-wrapper { justify-content: flex-end; }
 }
+.icon-chat {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-text-light);
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+body.dark .icon-chat {
+  color: var(--color-text-dark);
+}
+
+.action-link:hover .icon-chat {
+  color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+@media (min-width: var(--bp-md)) {
+  .icon-chat {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+}

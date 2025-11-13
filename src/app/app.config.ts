@@ -1,4 +1,8 @@
-import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideZoneChangeDetection,
+  importProvidersFrom,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { MatPaginatorIntl } from '@angular/material/paginator';
@@ -17,7 +21,7 @@ export const appConfig: ApplicationConfig = {
         const paginator = new MatPaginatorIntl();
         paginator.itemsPerPageLabel = 'Itens por página';
         return paginator;
-      }
-    }
-  ]
+      },
+    },
+  ],
 };
