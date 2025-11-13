@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +13,7 @@ import { ChatMessage } from '@shared/models/chat-message';
   templateUrl: './doc-summary-chat.component.html',
   styleUrls: ['./doc-summary-chat.component.scss']
 })
-export class DocSummaryChatComponent implements OnInit, AfterViewInit {
+export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
   documentId: string | null = null;
   messages: ChatMessage[] = [];
@@ -27,6 +27,8 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
   isSummaryOverflowing = false;
   showFullSummaryModal = false;
 
+  private summaryNeedsCheck = false;
+
   @ViewChild('messagesContainer') messagesContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('summaryParagraph') summaryParagraph!: ElementRef<HTMLParagraphElement>;
 
@@ -38,7 +40,6 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.documentId = this.route.snapshot.paramMap.get('id');
-    console.log('DOC-SUMMARY-CHAT: carregado para documento:', this.documentId);
 
     this.loadSummary();
 
@@ -50,6 +51,13 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(() => this.scrollToBottom(true));
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.summaryNeedsCheck && this.summaryParagraph) {
+      this.checkSummaryOverflow();
+      this.summaryNeedsCheck = false;
+    }
   }
 
   loadSummary(): void {
@@ -66,10 +74,9 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
       next: (data) => {
         this.summaryText = data;
         this.isSummaryLoading = false;
-        setTimeout(() => this.checkSummaryOverflow());
+        this.summaryNeedsCheck = true;
       },
       error: (err) => {
-        console.error('Falha ao carregar o resumo:', err);
         this.summaryError = 'Não foi possível carregar o resumo do documento.';
         this.isSummaryLoading = false;
       }

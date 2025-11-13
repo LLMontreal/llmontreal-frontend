@@ -15,7 +15,7 @@ export class ChatService {
   constructor(private http: HttpClient) { }
 
   getSummary(documentId: string): Observable<string> {
-    const url = `${this.apiUrl}/summary/${documentId}`;
+    const url = `${this.apiUrl}/documents/${documentId}/content`;
     return this.http.get(url, { responseType: 'text' })
       .pipe(catchError(this.handleError));
   }
@@ -39,7 +39,6 @@ export class ChatService {
   }
 
   private handleError(error: any): Observable<never> {
-    console.error('Ocorreu um erro na API:', error);
     return throwError(() => new Error('Falha na comunicação com o servidor. Tente novamente mais tarde.'));
   }
 }
