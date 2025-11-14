@@ -181,3 +181,38 @@ h2 {
     }
   }
 }
+button,
+.btn-primary,
+.btn-secondary {
+  font-family: var(--font-family-display);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  padding: 0.6rem 1.25rem;
+  transition: all 0.25s ease-in-out;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.9);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text-light);
+  border: 1px solid var(--color-border-light);
+}
+
+body.dark .btn-secondary {
+  color: var(--color-text-dark);
+  border-color: var(--color-border-dark);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+}
