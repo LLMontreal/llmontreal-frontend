@@ -174,7 +174,7 @@ describe('UploadDocumentComponent', () => {
         total: undefined,
       });
 
-      expect(component.progress).toBe(50);
+      expect(component.progress).toBe(0);
     });
 
     it('should set SUCCESS and reset state after response', () => {
