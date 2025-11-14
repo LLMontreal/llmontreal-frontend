@@ -2,36 +2,34 @@
 <p class="subtitle">
   Arraste e solte seus arquivos aqui ou selecione um arquivo para processar
 </p>
+
 <div class="upload-container">
+  <div
+    class="upload-area"
+    (drop)="onFileDrop($event)"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    [class.dragging]="isDragging"
+  >
+    <input
+      type="file"
+      id="fileInput"
+      (change)="onFileSelected($event)"
+      accept=".pdf,.docx,.png,.jpg,.jpeg,.txt,.zip"
+      hidden
+    />
 
-  @if (status === 'IDLE' || status === 'READY' || status === 'ERROR' || status === 'CANCELLED') {
-    <div
-      class="upload-area"
-      (drop)="onFileDrop($event)"
-      (dragover)="onDragOver($event)"
-      (dragleave)="onDragLeave($event)"
-      [class.dragging]="isDragging"
-    >
-      <input
-        type="file"
-        id="fileInput"
-        (change)="onFileSelected($event)"
-        accept=".pdf,.docx,.png,.jpg,.jpeg,.txt,.zip"
-        hidden
-      />
+    <label for="fileInput">
+      <i class="fas fa-cloud-upload-alt upload-icon"></i>
+      <p>Arraste e solte seus arquivos aqui</p>
+      <span class="separator-text">ou</span>
+      <span class="btn-select">Selecione um Arquivo</span>
+    </label>
+  </div>
 
-      <label for="fileInput">
-        <i class="fas fa-cloud-upload-alt upload-icon"></i>
-        <p>Arraste e solte seus arquivos aqui</p>
-        <span class="separator-text">ou</span>
-        <span class="btn-select">Selecione um Arquivo</span>
-      </label>
-    </div>
-
-    <p class="support-text">
-      Suporta PDF, DOCX, TXT, JPG, JPEG, PNG e ZIP
-    </p>
-  }
+  <p class="support-text">
+    Suporta PDF, DOCX, TXT, JPG, JPEG, PNG e ZIP
+  </p>
 
   @if (status === 'UPLOADING') {
     <div class="progress-section">
@@ -39,6 +37,7 @@
         <span>Uploading...</span>
         <span>{{ progress | number: '1.0-0' }}%</span>
       </div>
+
       <div class="progress-container">
         <div class="progress-bar" [style.width.%]="progress"></div>
       </div>
@@ -55,16 +54,11 @@
       <div class="text-container">
         <strong>Upload concluído com sucesso!</strong>
         <p>Seu documento foi enviado e salvo no sistema.</p>
-        <div class="redirect-wrapper">
-        <div class="redirect-bar" [style.width.%]="redirectProgress"></div>
-      </div>
-        <p class="redirect-timer">Redirecionando para o Dashboard...</p>
-      <div class="action-buttons">
-        <button class="btn-primary" (click)="goToDashboard()">Ir para Dashboard</button>
-        <button class="btn-secondary" (click)="resetUpload()">Enviar Novo Arquivo</button>
+        <div class="action-buttons">
+          <button class="btn-primary" (click)="goToDashboard()">Visualizar documento no Dashboard</button>
+        </div>
       </div>
     </div>
-  </div>
   }
 
   @if (status === 'ERROR') {
@@ -75,6 +69,9 @@
       <div class="text-container">
         <strong>Ocorreu um erro</strong>
         <p>{{ statusMessage }}</p>
+        <div class="action-buttons">
+          <button class="btn-primary" (click)="resetUpload()">Tentar Novamente</button>
+        </div>
       </div>
     </div>
   }
@@ -87,6 +84,9 @@
       <div class="text-container">
         <strong>Upload cancelado</strong>
         <p>Você cancelou o envio do arquivo.</p>
+        <div class="action-buttons">
+          <button class="btn-secondary" (click)="resetUpload()">Tentar Novamente</button>
+        </div>
       </div>
     </div>
   }

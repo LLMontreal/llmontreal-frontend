@@ -27,11 +27,8 @@ export class UploadDocumentComponent {
   status: Status = 'IDLE';
   statusMessage = 'Nenhum arquivo selecionado.';
   uploadSub?: Subscription;
-  isDragging = false;
-  redirectProgress = 0;
-  redirectInterval?: number;
-  redirectTime = 15000;
 
+  isDragging = false;
 
   private allowedMimeTypes = [
     'application/pdf',
@@ -132,15 +129,15 @@ export class UploadDocumentComponent {
         next: (event) => {
           if (event.type === HttpEventType.UploadProgress) {
             const total = event.total ?? this.selectedFile!.size;
-            this.progress = Math.round((event.loaded / total) * 100); 
+            this.progress = Math.round((event.loaded / total) * 100);
           } else if (event.type === HttpEventType.Response) {
-          this.status = 'SUCCESS';
-          this.statusMessage = 'Upload concluído com sucesso!';
-          this.progress = 100;
-          this.startRedirectProgress();
-          this.selectedFile = undefined;
-          console.log('Resposta do backend:', event.body);
-        }
+            this.status = 'SUCCESS';
+            this.statusMessage = 'Upload concluído com sucesso!';
+            this.progress = 100;
+            this.selectedFile = undefined;
+            console.log('Resposta do backend:', event.body);
+
+          }
         },
         error: (err) => {
           console.error(err);
@@ -172,38 +169,16 @@ export class UploadDocumentComponent {
   }
   ngOnDestroy(): void {
     this.uploadSub?.unsubscribe();
-      if (this.redirectInterval) clearInterval(this.redirectInterval);
-
   }
   goToDashboard() {
-  if (this.redirectInterval) clearInterval(this.redirectInterval);
   this.router.navigate(['/dashboard']);
 }
 
 resetUpload() {
-  if (this.redirectInterval) clearInterval(this.redirectInterval);
   this.status = 'IDLE';
   this.statusMessage = 'Nenhum arquivo selecionado.';
   this.selectedFile = undefined;
   this.progress = 0;
-}
-startRedirectProgress() {
-  const duration = this.redirectTime; 
-  const intervalTime = 50; 
-  const steps = duration / intervalTime;
-  let currentStep = 0;
-
-  this.redirectProgress = 0;
-
-  this.redirectInterval = setInterval(() => {
-    currentStep++;
-    this.redirectProgress = Math.min((currentStep / steps) * 100, 100);
-
-    if (this.redirectProgress >= 100) {
-      clearInterval(this.redirectInterval);
-      this.router.navigate(['/dashboard']);
-    }
-  }, intervalTime);
 }
 
 }
