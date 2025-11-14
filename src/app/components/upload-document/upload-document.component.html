@@ -55,12 +55,16 @@
       <div class="text-container">
         <strong>Upload concluído com sucesso!</strong>
         <p>Seu documento foi enviado e salvo no sistema.</p>
-        <div class="action-buttons">
+        <div class="redirect-wrapper">
+        <div class="redirect-bar" [style.width.%]="redirectProgress"></div>
+      </div>
+        <p class="redirect-timer">Redirecionando para o Dashboard...</p>
+      <div class="action-buttons">
         <button class="btn-primary" (click)="goToDashboard()">Ir para Dashboard</button>
         <button class="btn-secondary" (click)="resetUpload()">Enviar Novo Arquivo</button>
       </div>
-      </div>
     </div>
+  </div>
   }
 
   @if (status === 'ERROR') {
