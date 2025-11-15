@@ -66,8 +66,6 @@ $breakpoints: (
   }
 }
 
-
-
 .summary {
   width: 100%;
   max-width: 1100px;       
@@ -237,7 +235,6 @@ $breakpoints: (
     .sender { color: #555; }
     .message {
       background: #d3dbe7;
-      color: #111827;
       border-bottom-left-radius: $radius-sm;
       max-width: 700px;
     }
@@ -314,8 +311,8 @@ $breakpoints: (
   gap: 6px;
 
   span {
-    height: 5px;
-    width: 5px;
+    height: 7px;
+    width: 7px;
     background: #9E9E9E;
     border-radius: 3px;
     display: inline-block;
