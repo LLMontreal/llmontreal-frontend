@@ -15,7 +15,7 @@ export class ChatService {
   constructor(private http: HttpClient) { }
 
   getSummary(documentId: string): Observable<string> {
-    const url = `${this.apiUrl}/documents/${documentId}/content`;
+    const url = `${this.apiUrl}/documents/${documentId}/summary`;
     return this.http.get(url, { responseType: 'text' })
       .pipe(catchError(this.handleError));
   }
