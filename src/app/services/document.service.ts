@@ -17,16 +17,19 @@ import { DocumentUploadResponse } from '../models/document-upload-response.model
 export class DocumentService {
   private apiUrl = `${environment.apiUrl}/documents`;
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
+  constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
 
   getDocuments(
     page: number,
     size: number,
-    status?: string
+    status?: string,
+    sortField: string = 'createdAt',
+    sortDirection: 'asc' | 'desc' = 'desc'
   ): Observable<Page<DocumentDTO>> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString());
+      .set('size', size.toString())
+      .set('sort', `${sortField},${sortDirection}`);
 
     if (status) params = params.set('status', status);
 
@@ -53,7 +56,7 @@ export class DocumentService {
           this.handleError('Erro ao enviar o documento.', err)
         )
       );
-    }
+  }
 
   getDocumentById(id: number): Observable<DocumentDTO> {
     return this.http
