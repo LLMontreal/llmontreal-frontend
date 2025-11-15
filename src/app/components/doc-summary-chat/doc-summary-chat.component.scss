@@ -66,62 +66,26 @@ $breakpoints: (
   }
 }
 
+
+
 .summary {
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto 24px;
-  border: 1px solid var(--color-border-light);
-  padding: 20px 24px;
-  flex-direction: column;
-
-  @include breakpoint("mobile") {
-    max-height: none;
-    padding: 16px;
-  }
-
-  .summary-header {
-    @include flex-center(space-between);
-    margin-bottom: 8px;
-    flex-shrink: 0;
-  }
-
-  h2 { margin: 0; }
-
-  p {
-    margin: 0;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-
-    @include breakpoint("mobile") {
-      -webkit-line-clamp: 6;
-    }
-  }
-
-  .summary-loading {
-    @extend %centered-message-box;
-  }
-
-  .summary-error {
-    @extend %centered-message-box;
-    color: var(--color-error);
-  }
+  max-width: 1100px;       
+  margin: 0 auto 16px;             
+  display: flex;
+  justify-content: flex-end;
+  box-sizing: border-box;
 }
 
 .see-more-button {
   @extend %button-reset;
-  border: 1px solid var(--color-primary);
-  color: var(--color-primary);
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  font-weight: 600;
-  @include transition;
-
-  &:hover {
-    background-color: var(--color-primary);
-    color: var(--color-text-dark);
-  }
+  
+  color: var(--color-text-dark);
+  background-color: var(--color-primary);
+  padding: 8px 24px;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 12px;
 }
 
 .modal-close-button {
@@ -160,7 +124,7 @@ $breakpoints: (
   background-color: var(--color-background-light, --color-background-light);
   padding: 24px 32px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-light,--color-border-dark);
+  border: 1px solid var(--color-border-light, --color-border-dark);
   max-width: 800px;
   max-height: 800px;
   overflow-y: auto;
@@ -168,7 +132,8 @@ $breakpoints: (
   box-shadow: $shadow-lg;
   animation: slideIn 0.3s ease-out;
   text-align: justify;
-  scrollbar-width:thin;
+  scrollbar-width: thin;
+
   @include breakpoint("mobile") {
     width: 95%;
     padding: 20px 16px;
@@ -176,7 +141,7 @@ $breakpoints: (
 
   h2 {
     margin-top: 0;
-    text-align: center;
+    text-align: left;
   }
 }
 
@@ -190,18 +155,14 @@ $breakpoints: (
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  max-height: calc(60vh - 180px);
-  min-height: 280px;
-  overflow: hidden;
+  min-height: 480px;
+  max-height: 900px;
+  overflow: visible;
   @include transition;
 
-  @include breakpoint("tablet") {
-    max-height: calc(75vh - 150px);
-  }
-
   @include breakpoint("mobile") {
-    min-height: 0;
-    max-height: calc(60vh - 140px);
+    min-height: 480px;
+    max-height: 900px;
     padding: 12px;
   }
 
@@ -224,7 +185,8 @@ $breakpoints: (
     border-radius: 0;
     border: none;
     z-index: $z-index-fullscreen-chat;
-    background-color: var(--color-background-light,--color-background-dark);
+    background-color: var(--color-background-light, --color-background-dark);
+    overflow: hidden;
   }
 }
 
@@ -275,9 +237,9 @@ $breakpoints: (
     .sender { color: #555; }
     .message {
       background: #d3dbe7;
-      border: 1px solid #d5dde8, ;
       color: #111827;
       border-bottom-left-radius: $radius-sm;
+      max-width: 700px;
     }
   }
 
@@ -291,47 +253,37 @@ $breakpoints: (
       background: var(--color-primary);
       border-radius: $radius-lg $radius-lg $radius-sm $radius-lg;
       color: var(--color-text-dark);
+      max-width: 700px;
     }
   }
 }
 
-.citation {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #ddd;
-  font-size: 0.9rem;
-
-  p {
-    margin: 5px 0 0;
-    font-style: italic;
-    color: var(--color-text-light);
-  }
-}
-
 .chat-input {
-  flex: 0 0 auto;
-  border-top: 1px solid #eee;
-  padding: 12px 0 4px;
-  border-color: var(--color-border-light,--color-border-dark);
-
-  @include breakpoint("mobile") {
-    padding: 8px 0 0;
-  }
+  padding-top: 12px;
+  padding-bottom: 4px;
+  flex-shrink: 0;
 
   form {
     @include flex-center(stretch);
+    align-items: center;
     gap: 10px;
   }
 
-  input {
+  .chat-textarea {
     flex: 1 1 auto;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    padding: 10px 15px;
-    font-size: 1rem;
+    min-height: 48px;                  
+    max-height: 160px;
+    border-radius: 17px;              
+    padding: 12px 16px;
+    font-family: inherit;
+
     background-color: var(--color-background-light, --color-background-dark);
     color: var(--color-text-light, --color-text-dark);
-    
+    border: 1px solid var(--color-border-light, --color-border-dark);
+    resize: none;
+    overflow-y: hidden;
+    overflow-x: hidden;
+
 
     @include breakpoint("mobile") {
       font-size: 0.95rem;
@@ -346,7 +298,6 @@ $breakpoints: (
     border-radius: $radius-circle;
     width: 40px;
     height: 40px;
-    flex-shrink: 0;
     cursor: pointer;
     @include transition(background-color);
 
@@ -372,8 +323,8 @@ $breakpoints: (
   }
 }
 
-:host-context(.dark) {
 
+:host-context(.dark) {
   .message-wrapper {
     &.ia {
       .message {
@@ -384,7 +335,6 @@ $breakpoints: (
     }
     &.user .sender { color: #d2e2ff; }
   }
-
 }
 
 @keyframes bounce {

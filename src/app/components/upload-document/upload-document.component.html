@@ -1,0 +1,86 @@
+<h2>Upload de Documentos</h2>
+<p class="subtitle">
+  Arraste e solte seus arquivos aqui ou selecione um arquivo para processar
+</p>
+<div class="upload-container">
+
+  @if (status === 'IDLE' || status === 'READY' || status === 'ERROR' || status === 'CANCELLED') {
+    <div
+      class="upload-area"
+      (drop)="onFileDrop($event)"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      [class.dragging]="isDragging"
+    >
+      <input
+        type="file"
+        id="fileInput"
+        (change)="onFileSelected($event)"
+        accept=".pdf,.docx,.png,.jpg,.jpeg,.txt,.zip"
+        hidden
+      />
+
+      <label for="fileInput">
+        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+        <p>Arraste e solte seus arquivos aqui</p>
+        <span class="separator-text">ou</span>
+        <span class="btn-select">Selecione um Arquivo</span>
+      </label>
+    </div>
+
+    <p class="support-text">
+      Suporta PDF, DOCX, TXT, JPG, JPEG, PNG e ZIP
+    </p>
+  }
+
+  @if (status === 'UPLOADING') {
+    <div class="progress-section">
+      <div class="progress-header">
+        <span>Uploading...</span>
+        <span>{{ progress | number: '1.0-0' }}%</span>
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar" [style.width.%]="progress"></div>
+      </div>
+
+      <button (click)="cancelUpload()" class="btn-cancel">Cancelar</button>
+    </div>
+  }
+
+  @if (status === 'SUCCESS') {
+    <div class="status-alert success">
+      <div class="icon-container">
+        <i class="fas fa-check"></i>
+      </div>
+      <div class="text-container">
+        <strong>Upload concluído com sucesso!</strong>
+        <p>Seu documento foi enviado e salvo no sistema.</p>
+      </div>
+    </div>
+  }
+
+  @if (status === 'ERROR') {
+    <div class="status-alert error">
+      <div class="icon-container">
+        <i class="fas fa-times"></i>
+      </div>
+      <div class="text-container">
+        <strong>Ocorreu um erro</strong>
+        <p>{{ statusMessage }}</p>
+      </div>
+    </div>
+  }
+
+  @if (status === 'CANCELLED') {
+    <div class="status-alert error">
+      <div class="icon-container">
+        <i class="fas fa-ban"></i>
+      </div>
+      <div class="text-container">
+        <strong>Upload cancelado</strong>
+        <p>Você cancelou o envio do arquivo.</p>
+      </div>
+    </div>
+  }
+
+</div>

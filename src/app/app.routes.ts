@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
-import { DocSummaryChatComponent } from '@components/doc-summary-chat/doc-summary-chat.component'; 
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { UploadDocumentComponent } from './components/upload-document/upload-document.component';
+import { DocSummaryChatComponent } from '@components/doc-summary-chat/doc-summary-chat.component';
 
 export const routes: Routes = [
- 
-  { path: 'chat/:id', component: DocSummaryChatComponent }, 
-  
-  { path: '**', redirectTo: '' }
+
+	{ path: '', component: UploadDocumentComponent, pathMatch: 'full' },
+	{ path: 'dashboard', component: DashboardComponent },
+	{ path: 'upload-document', component: UploadDocumentComponent },
+	{ path: 'chat/:id', component: DocSummaryChatComponent }, 
+	{ path: '**', redirectTo: '' }
 ];
+

@@ -27,6 +27,41 @@ body.dark .main-header {
   text-decoration: none;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobile-menu-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-light);
+  transition: color 0.3s ease;
+}
+
+body.dark .mobile-menu-button {
+  color: #ffffff; 
+}
+
+@media (min-width: 768px) {
+  .mobile-menu-button {
+    display: none;
+  }
+}
+
 .logo-icon {
   width: 48px;
   height: 48px;
@@ -46,7 +81,7 @@ body.dark .brand-name {
 }
 
 .header-nav {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 16px;
 
@@ -59,12 +94,7 @@ body.dark .brand-name {
     transition: background-color 0.25s, color 0.25s;
 
     &:hover {
-      background-color: rgba(
-        74,
-        144,
-        226,
-        0.15
-      );
+      background-color: rgba(74, 144, 226, 0.15);
     }
 
     &.active-link {
@@ -74,18 +104,53 @@ body.dark .brand-name {
   }
 }
 
-body.dark .header-nav a {
-  color: var(--color-text-dark);
+body.dark .header-nav {
+  a {
+    color: var(--color-text-dark);
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-  }
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
 
-  &.active-link {
-    color: var(--color-primary);
-    background-color: rgba(74, 144, 226, 0.15);
+    &.active-link {
+      color: var(--color-primary);
+      background-color: rgba(74, 144, 226, 0.15);
+    }
   }
 }
+
+@media (min-width: 768px) {
+  .header-nav {
+    display: flex;
+  }
+}
+
+.menu-open .header-nav {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: var(--color-background-light);
+  border-bottom: 1px solid var(--color-border-light);
+  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+}
+
+body.dark .menu-open .header-nav {
+  background: #ffffff;
+  border-bottom-color: var(--color-border-light);
+
+  a {
+    color: #000000; 
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
 .theme-toggle {
   background: none;
   border: 1px solid var(--color-border-light);
@@ -122,4 +187,59 @@ body.dark .theme-toggle {
   &:hover {
     background-color: rgba(255, 255, 255, 0.05);
   }
+}
+
+.header-container,
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .header-nav {
+    display: none;
+  }
+  .mobile-menu-button {
+    display: inline-flex;
+  }
+}
+
+.menu-open .header-nav {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: var(--color-background-light);
+  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+}
+
+body.dark .menu-open .header-nav a {
+  color: #000000;
+}
+
+body.dark .menu-open .header-nav a:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }

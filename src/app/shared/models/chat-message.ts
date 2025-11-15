@@ -1,5 +1,5 @@
 export interface ChatMessage {
-  sender: 'IA' | 'Você';
+  sender: 'Montreal Bot' | 'Você';
   text: string;
   citation?: string;
 }

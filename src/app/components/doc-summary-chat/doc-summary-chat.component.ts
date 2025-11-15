@@ -31,6 +31,7 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('summaryParagraph') summaryParagraph!: ElementRef<HTMLParagraphElement>;
+  @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,18 +45,25 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
     this.loadSummary();
 
     this.messages.push({
-      sender: 'IA',
+      sender: 'Montreal Bot',
       text: 'Olá! Faça uma pergunta sobre o documento para começar.'
     });
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.scrollToBottom(true));
+    setTimeout(() => {
+      this.scrollToBottom(true);
+
+      // garante altura mínima logo que abrir
+      if (this.messageInput?.nativeElement) {
+        this.messageInput.nativeElement.style.height = '48px';
+      }
+    });
   }
 
   ngAfterViewChecked(): void {
-    if (this.summaryNeedsCheck && this.summaryParagraph) {
-      this.checkSummaryOverflow();
+    if (this.summaryNeedsCheck) {
+    
       this.summaryNeedsCheck = false;
     }
   }
@@ -83,15 +91,7 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
     });
   }
 
-  checkSummaryOverflow(): void {
-    if (this.summaryParagraph) {
-      const el = this.summaryParagraph.nativeElement;
-      if (el.scrollHeight > el.clientHeight) {
-        this.isSummaryOverflowing = true;
-        this.cdr.detectChanges();
-      }
-    }
-  }
+
 
   openSummaryModal(): void {
     this.showFullSummaryModal = true;
@@ -106,6 +106,33 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
     setTimeout(() => this.scrollToBottom(false), 0);
   }
 
+  autoResize(textarea: HTMLTextAreaElement): void {
+    const minHeight = 48;
+    const maxHeight = 160;
+
+    textarea.style.height = minHeight + 'px';
+    const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+    textarea.style.height = newHeight + 'px';
+
+    this.scrollToBottom(false);
+  }
+
+ onEnter(event: KeyboardEvent | Event): void {
+  const e = event as KeyboardEvent;
+
+  if (e.shiftKey) {
+    return;
+  }
+
+  e.preventDefault();
+
+  if (!this.newMessage.trim() || this.isLoading || !this.documentId) {
+    return;
+  }
+
+  this.sendMessage();
+}
+
   sendMessage(): void {
     if (!this.newMessage.trim() || !this.documentId) return;
 
@@ -114,23 +141,30 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
     this.newMessage = '';
     this.isLoading = true;
 
+    // Resetar a altura do input após enviar
+    setTimeout(() => {
+      if (this.messageInput?.nativeElement) {
+        this.messageInput.nativeElement.style.height = '48px';
+      }
+    });
+
     this.scrollToBottom(true);
 
     this.chatService.getResponse(this.documentId, currentMessage).subscribe({
-        next: (iaResponse) => {
-            this.messages.push(iaResponse);
-            this.isLoading = false;
-            this.scrollToBottom(true);
-        },
-        error: (err) => {
-            console.error('Falha ao obter resposta da IA:', err);
-            this.messages.push({
-                sender: 'IA',
-                text: 'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.'
-            });
-            this.isLoading = false;
-            this.scrollToBottom(true);
-        }
+      next: (iaResponse) => {
+        this.messages.push(iaResponse);
+        this.isLoading = false;
+        this.scrollToBottom(true);
+      },
+      error: (err) => {
+        console.error('Falha ao obter resposta da IA:', err);
+        this.messages.push({
+          sender: 'Montreal Bot',
+          text: 'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.'
+        });
+        this.isLoading = false;
+        this.scrollToBottom(true);
+      }
     });
   }
 

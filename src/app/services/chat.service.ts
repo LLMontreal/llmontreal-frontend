@@ -31,7 +31,7 @@ export class ChatService {
 
     return this.http.post<any>(url, requestBody).pipe(
       map(res => ({
-        sender: res.author === 'MODEL' ? 'IA' : res.author,
+        sender: res.author === 'MODEL' ? 'Montreal Bot' : res.author,
         text: res.response
       })),
       catchError(this.handleError)
