@@ -17,9 +17,7 @@
 
         <h2>Resumo Completo</h2>
 
-        @if (isSummaryLoading) {
-          <div class="summary-loading">Carregando resumo...</div>
-        } @else if (summaryError) {
+         @if (summaryError) {
           <div class="summary-error">{{ summaryError }}</div>
         } @else {
           <p>{{ summaryText }}</p>
@@ -101,17 +99,3 @@
         </button>
       </form>
     </div>
-
-
-    @if (showFullSummaryModal) {
-    <div class="modal-overlay" (click)="closeSummaryModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <button class="modal-close-button" (click)="closeSummaryModal()">
-          &times;
-        </button>
-
-        <h2>Resumo Completo</h2>
-        <p>{{ summaryText }}</p>
-      </div>
-    </div>
-    }

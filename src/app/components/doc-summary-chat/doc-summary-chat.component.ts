@@ -22,7 +22,6 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
   isChatFullscreen = false;
 
   summaryText = '';
-  isSummaryLoading = true;
   summaryError: string | null = null;
   isSummaryOverflowing = false;
   showFullSummaryModal = false;
@@ -54,7 +53,6 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
     setTimeout(() => {
       this.scrollToBottom(true);
 
-      // garante altura mínima logo que abrir
       if (this.messageInput?.nativeElement) {
         this.messageInput.nativeElement.style.height = '48px';
       }
@@ -68,30 +66,27 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
     }
   }
 
-  loadSummary(): void {
-    if (!this.documentId) {
-      this.summaryError = "ID do documento não encontrado.";
-      this.isSummaryLoading = false;
-      return;
-    }
-
-    this.isSummaryLoading = true;
-    this.summaryError = null;
-
-    this.chatService.getSummary(this.documentId).subscribe({
-      next: (data) => {
-        this.summaryText = data;
-        this.isSummaryLoading = false;
-        this.summaryNeedsCheck = true;
-      },
-      error: (err) => {
-        this.summaryError = 'Não foi possível carregar o resumo do documento.';
-        this.isSummaryLoading = false;
-      }
-    });
+loadSummary(): void {
+  if (!this.documentId) {
+    this.summaryText = '';
+    this.summaryError = "ID do documento não encontrado.";
+    return;
   }
 
+  this.summaryError = null;
+  this.summaryText = ''; 
 
+  this.chatService.getSummary(this.documentId).subscribe({
+    next: (data) => {
+      this.summaryText = data;
+      this.summaryNeedsCheck = true;
+    },
+    error: (err) => {
+      this.summaryText = ''; 
+      this.summaryError = 'Não foi possível carregar o resumo do documento.';
+    }
+  });
+}
 
   openSummaryModal(): void {
     this.showFullSummaryModal = true;
@@ -141,7 +136,6 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
     this.newMessage = '';
     this.isLoading = true;
 
-    // Resetar a altura do input após enviar
     setTimeout(() => {
       if (this.messageInput?.nativeElement) {
         this.messageInput.nativeElement.style.height = '48px';
@@ -157,7 +151,6 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
         this.scrollToBottom(true);
       },
       error: (err) => {
-        console.error('Falha ao obter resposta da IA:', err);
         this.messages.push({
           sender: 'Montreal Bot',
           text: 'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.'
