@@ -4,11 +4,11 @@ import { Subscription } from 'rxjs';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { DocumentService } from '../../services/document.service';
 
+
 type Status =
   | 'IDLE'
   | 'READY'
   | 'UPLOADING'
-  | 'PROCESSING'
   | 'SUCCESS'
   | 'ERROR'
   | 'CANCELLED';
@@ -29,14 +29,27 @@ export class UploadDocumentComponent implements OnDestroy {
 
   isDragging = false;
 
-  private allowed = [
+  private allowedMimeTypes = [
     'application/pdf',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'image/png',
     'image/jpeg',
     'text/plain',
+    'application/zip',
+    'application/x-zip-compressed',
+    'multipart/x-zip',
+    'application/x-compressed',
   ];
   private maxSizeBytes = 25 * 1024 * 1024; // 25MB
+  private allowedExtensions = [
+    'pdf',
+    'docx',
+    'png',
+    'jpg',
+    'jpeg',
+    'txt',
+    'zip',
+  ];
 
   constructor(private documentService: DocumentService) {}
 
@@ -77,12 +90,21 @@ export class UploadDocumentComponent implements OnDestroy {
   }
 
   private handleSelectedFile(file: File) {
-    if (!this.allowed.includes(file.type)) {
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+
+    const mimeOk =
+      this.allowedMimeTypes.includes(file.type) ||
+      (file.type === '' && ext === 'zip');
+
+    const extOk = this.allowedExtensions.includes(ext);
+
+    if (!mimeOk || !extOk) {
       this.setError(
-        `Tipo de arquivo inválido. (Permitidos: PDF, DOCX, PNG, JPG, TXT)`
+        `Tipo de arquivo inválido. (Permitidos: PDF, DOCX, PNG, JPG, TXT, ZIP)`
       );
       return;
     }
+
     if (file.size > this.maxSizeBytes) {
       this.setError(`O arquivo ultrapassa o limite de 25MB.`);
       return;
@@ -93,7 +115,6 @@ export class UploadDocumentComponent implements OnDestroy {
     this.progress = 0;
     this.uploadFile();
   }
-
   uploadFile() {
     if (!this.selectedFile) return;
 
@@ -104,21 +125,23 @@ export class UploadDocumentComponent implements OnDestroy {
     this.uploadSub = this.documentService
       .uploadDocument(this.selectedFile)
       .subscribe({
-        next: (event: HttpEvent<any>) => {
+        next: (event) => {
           if (event.type === HttpEventType.UploadProgress) {
-            if (event.total) {
-              this.progress = Math.round(100 * (event.loaded / event.total));
-            }
+            const total = event.total ?? this.selectedFile!.size;
+            this.progress = Math.round((event.loaded / total) * 100);
           } else if (event.type === HttpEventType.Response) {
             this.status = 'SUCCESS';
-            this.statusMessage = 'Upload concluído. Processando documento...';
+            this.statusMessage = 'Upload concluído com sucesso!';
             this.progress = 100;
             this.selectedFile = undefined;
+            console.log('Resposta do backend:', event.body);
           }
         },
         error: (err) => {
           console.error(err);
-          this.setError('Ocorreu um erro ao enviar o arquivo.');
+          const backendMsg =
+            err.error?.message || 'Ocorreu um erro ao enviar o arquivo.';
+          this.setError(backendMsg);
         },
       });
   }
@@ -142,7 +165,6 @@ export class UploadDocumentComponent implements OnDestroy {
     this.progress = 0;
     this.selectedFile = undefined;
   }
-
   ngOnDestroy(): void {
     this.uploadSub?.unsubscribe();
   }
