@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
+import { AppComponent } from './app.component';
 import { provideHttpClient } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -10,11 +11,12 @@ describe('AppComponent', () => {
       imports: [
         AppComponent,
         MatSnackBarModule,
+        HttpClientTestingModule
       ],
       providers: [
-        provideRouter([]),   
-        provideHttpClient(),   
-      ],
+        provideRouter([]),
+        provideHttpClient(),
+      ]
     }).compileComponents();
   });
 

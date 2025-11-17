@@ -1,8 +1,9 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { DocumentService } from '../../services/document.service';
+import { Router } from '@angular/router';
 
 
 type Status =
@@ -20,7 +21,7 @@ type Status =
   templateUrl: './upload-document.component.html',
   styleUrls: ['./upload-document.component.scss'],
 })
-export class UploadDocumentComponent {
+export class UploadDocumentComponent implements OnDestroy {
   selectedFile?: File;
   progress = 0;
   status: Status = 'IDLE';
@@ -51,7 +52,7 @@ export class UploadDocumentComponent {
     'zip',
   ];
 
-  constructor(private documentService: DocumentService) {}
+  constructor(private documentService: DocumentService, private router: Router) {}
 
   @HostListener('window:dragover', ['$event'])
   onWindowDragOver(evt: DragEvent) {
@@ -135,6 +136,7 @@ export class UploadDocumentComponent {
             this.progress = 100;
             this.selectedFile = undefined;
             console.log('Resposta do backend:', event.body);
+
           }
         },
         error: (err) => {
@@ -168,4 +170,15 @@ export class UploadDocumentComponent {
   ngOnDestroy(): void {
     this.uploadSub?.unsubscribe();
   }
+  goToDashboard() {
+  this.router.navigate(['/dashboard']);
+}
+
+resetUpload() {
+  this.status = 'IDLE';
+  this.statusMessage = 'Nenhum arquivo selecionado.';
+  this.selectedFile = undefined;
+  this.progress = 0;
+}
+
 }
