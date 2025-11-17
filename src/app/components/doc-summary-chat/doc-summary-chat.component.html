@@ -8,6 +8,7 @@
     </button>
   </div>
 </section>
+
   @if (showFullSummaryModal) {
     <div class="modal-overlay" (click)="closeSummaryModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
@@ -17,7 +18,7 @@
 
         <h2>Resumo Completo</h2>
 
-         @if (summaryError) {
+        @if (summaryError) {
           <div class="summary-error">{{ summaryError }}</div>
         } @else {
           <p>{{ summaryText }}</p>
@@ -40,25 +41,6 @@
       @for (message of messages; track message) {
       <div class="message-wrapper" [ngClass]="message.sender === 'Você' ? 'user' : 'ia'">
 
-        @if (message.sender === 'Montreal Bot') {
-        <div class="message-container">
-          <div class="sender">
-            {{ message.sender }}
-          </div>
-
-          <div class="message">
-            <div class="text">{{ message.text }}</div>
-
-            @if (message.citation) {
-            <div class="citation">
-              <strong>Citações:</strong>
-              <p>"{{ message.citation }}"</p>
-            </div>
-            }
-          </div>
-        </div>
-
-        } @else {
         <div class="message-container">
           <div class="sender">
             {{ message.sender }}
@@ -68,7 +50,6 @@
             <div class="text">{{ message.text }}</div>
           </div>
         </div>
-        }
 
       </div>
       }
@@ -99,3 +80,5 @@
         </button>
       </form>
     </div>
+  </section>
+</div>
