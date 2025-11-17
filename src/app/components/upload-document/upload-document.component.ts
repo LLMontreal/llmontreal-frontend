@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
@@ -21,7 +21,7 @@ type Status =
   templateUrl: './upload-document.component.html',
   styleUrls: ['./upload-document.component.scss'],
 })
-export class UploadDocumentComponent {
+export class UploadDocumentComponent implements OnDestroy {
   selectedFile?: File;
   progress = 0;
   status: Status = 'IDLE';
