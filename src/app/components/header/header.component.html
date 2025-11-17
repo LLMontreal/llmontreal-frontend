@@ -4,9 +4,17 @@
       <img src="assets/logo-LlMontreal.svg" alt="LlMontreal logo" class="logo-icon" />
       <span class="brand-name">LLMontreal</span>
     </a>
+      <div class="header-divider"></div>
+
       <nav class="header-nav" aria-label="Primary Navigation">
-        <a routerLink="/upload" routerLinkActive="active-link">Upload de Documento</a>
-        <a routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a>
+        <a routerLink="/upload-document" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+  Upload de Documento
+</a>
+
+<a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+  Dashboard
+</a>
+
       </nav>
     </div>
 
