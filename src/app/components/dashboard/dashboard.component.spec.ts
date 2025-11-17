@@ -27,7 +27,7 @@ describe('DashboardComponent', () => {
     // prepare fake page
     const fakePage: Page<DocumentDTO> = {
       content: [
-        { id: 1, status: 'COMPLETED' as any, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), fileName: 'file.pdf', fileType: 'application/pdf', summary: null }
+        { id: 1, status: 'COMPLETED' as any, createdAt: new Date().toISOString(), fileName: 'file.pdf', fileType: 'application/pdf' }
       ],
       totalPages: 1,
       totalElements: 1,
