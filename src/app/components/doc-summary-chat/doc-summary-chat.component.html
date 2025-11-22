@@ -1,30 +1,75 @@
 <div class="page-container">
   <h1 class="main-title">Resumo e Análise do Documento</h1>
 
-<section class="summary">
-  <div>
-    <button class="see-more-button" (click)="openSummaryModal()">
-      Ver resumo
-    </button>
-  </div>
-</section>
+  <section class="summary">
+    <div class="summary-actions">
+      <button class="see-more-button" (click)="openSummaryModal()">
+        Ver resumo
+      </button>
+
+      <button class="regenerate-button" (click)="openConfirmRegenerateModal()"
+        [disabled]="isRegeneratingSummary || !documentId">
+        {{ isRegeneratingSummary ? 'Regenerando...' : 'Regenerar resumo' }}
+      </button>
+    </div>
+  </section>
 
   @if (showFullSummaryModal) {
-    <div class="modal-overlay" (click)="closeSummaryModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <button class="modal-close-button" (click)="closeSummaryModal()">
-          &times;
+  <div class="modal-overlay" (click)="closeSummaryModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" (click)="closeSummaryModal()">
+        &times;
+      </button>
+
+      <h2>Resumo Completo</h2>
+
+      @if (summaryError) {
+      <div class="summary-error">{{ summaryError }}</div>
+      } @else {
+      <p>{{ summaryText }}</p>
+      }
+    </div>
+  </div>
+  }
+
+  @if (confirmRegenerateModalOpen) {
+  <div class="modal-overlay" (click)="closeConfirmRegenerateModal()">
+    <div class="modal-content small" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" (click)="closeConfirmRegenerateModal()">
+        &times;
+      </button>
+
+      <h2>Regenerar resumo</h2>
+
+      <p>
+        Tem certeza que deseja gerar um novo resumo para este documento?
+        O resumo atual será substituído.
+      </p>
+
+      @if (regenerateError) {
+      <div class="summary-error">
+        {{ regenerateError }}
+      </div>
+      }
+
+      <div class="confirm-actions">
+        <button class="secondary-button" type="button" (click)="closeConfirmRegenerateModal()"
+          [disabled]="isRegeneratingSummary">
+          Cancelar
         </button>
 
-        <h2>Resumo Completo</h2>
-
-        @if (summaryError) {
-          <div class="summary-error">{{ summaryError }}</div>
-        } @else {
-          <p>{{ summaryText }}</p>
-        }
+        <button class="primary-button" type="button" (click)="confirmRegenerateSummary()"
+          [disabled]="isRegeneratingSummary">
+          @if (isRegeneratingSummary) {
+          <span class="spinner"></span>
+          <span>Regenerando...</span>
+          } @else {
+          <span>Sim, regenerar</span>
+          }
+        </button>
       </div>
     </div>
+  </div>
   }
 
   <section class="chat-card" [ngClass]="{ 'fullscreen': isChatFullscreen }">
@@ -37,10 +82,8 @@
     </div>
 
     <div class="chat-messages" #messagesContainer>
-
       @for (message of messages; track message) {
       <div class="message-wrapper" [ngClass]="message.sender === 'Você' ? 'user' : 'ia'">
-
         <div class="message-container">
           <div class="sender">
             {{ message.sender }}
@@ -50,7 +93,6 @@
             <div class="text">{{ message.text }}</div>
           </div>
         </div>
-
       </div>
       }
 
@@ -66,7 +108,6 @@
         </div>
       </div>
       }
-
     </div>
 
     <div class="chat-input">

@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChatService } from '@services/chat.service';
 import { ChatMessage } from '@shared/models/chat-message';
 
 @Component({
   selector: 'app-doc-summary-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatSnackBarModule],
   templateUrl: './doc-summary-chat.component.html',
   styleUrls: ['./doc-summary-chat.component.scss']
 })
@@ -25,13 +26,18 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
   summaryError: string | null = null;
   showFullSummaryModal = false;
 
+  confirmRegenerateModalOpen = false;
+  isRegeneratingSummary = false;
+  regenerateError: string | null = null;
+
   @ViewChild('messagesContainer') messagesContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('summaryParagraph') summaryParagraph!: ElementRef<HTMLParagraphElement>;
   @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
 
   constructor(
     private route: ActivatedRoute,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -82,6 +88,52 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
 
   closeSummaryModal(): void {
     this.showFullSummaryModal = false;
+  }
+
+  openConfirmRegenerateModal(): void {
+    this.regenerateError = null;
+    this.confirmRegenerateModalOpen = true;
+  }
+
+  closeConfirmRegenerateModal(): void {
+    if (this.isRegeneratingSummary) return;
+    this.confirmRegenerateModalOpen = false;
+  }
+
+  confirmRegenerateSummary(): void {
+    if (!this.documentId || this.isRegeneratingSummary) return;
+
+    this.isRegeneratingSummary = true;
+    this.regenerateError = null;
+    this.summaryText = 'Gerando novo resumo, aguarde alguns instantes...';
+
+    this.chatService.regenerateSummary(this.documentId).subscribe({
+      next: () => {
+        setTimeout(() => {
+          this.loadSummary();
+          this.isRegeneratingSummary = false;
+          this.confirmRegenerateModalOpen = false;
+          this.snackBar.open('Resumo regenerado com sucesso!', 'Fechar', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            panelClass: ['custom-snackbar'],
+            verticalPosition: 'bottom',
+          });
+        }, 5000);
+      },
+      error: () => {
+        this.isRegeneratingSummary = false;
+        this.summaryText = '';
+        this.regenerateError = 'Não foi possível solicitar a regeneração do resumo.';
+
+        this.snackBar.open('Erro ao regenerar resumo.', 'Fechar', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['custom-snackbar']
+        });
+      }
+    });
   }
 
   toggleChatFullscreen(): void {
@@ -149,19 +201,19 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
     });
   }
 
-private scrollToBottom(): void {
-  if (!this.messagesContainer) return;
+  private scrollToBottom(): void {
+    if (!this.messagesContainer) return;
 
-  setTimeout(() => {
-    const el = this.messagesContainer.nativeElement;  
-    el.scrollTo({
-      top: el.scrollHeight,
-      behavior: 'smooth'
-    });
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth'
-    });
-  }, 0);
-}
+    setTimeout(() => {
+      const el = this.messagesContainer.nativeElement;
+      el.scrollTo({
+        top: el.scrollHeight,
+        behavior: 'smooth'
+      });
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    }, 0);
+  }
 }
