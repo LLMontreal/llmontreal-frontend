@@ -1,4 +1,4 @@
-export interface ChatMessage {
+export interface ChatMessageResponseDto {
   documentId: number;
   chatSessionId: number;
   author: string;

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +13,7 @@ import { ChatMessage } from '@shared/models/chat-message';
   templateUrl: './doc-summary-chat.component.html',
   styleUrls: ['./doc-summary-chat.component.scss']
 })
-export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class DocSummaryChatComponent implements OnInit, AfterViewInit {
 
   documentId: string | null = null;
   messages: ChatMessage[] = [];
@@ -23,10 +23,7 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
 
   summaryText = '';
   summaryError: string | null = null;
-  isSummaryOverflowing = false;
   showFullSummaryModal = false;
-
-  private summaryNeedsCheck = false;
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('summaryParagraph') summaryParagraph!: ElementRef<HTMLParagraphElement>;
@@ -34,9 +31,8 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
 
   constructor(
     private route: ActivatedRoute,
-    private chatService: ChatService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private chatService: ChatService
+  ) { }
 
   ngOnInit(): void {
     this.documentId = this.route.snapshot.paramMap.get('id');
@@ -51,7 +47,7 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.scrollToBottom(true);
+      this.scrollToBottom();
 
       if (this.messageInput?.nativeElement) {
         this.messageInput.nativeElement.style.height = '48px';
@@ -59,34 +55,26 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, AfterView
     });
   }
 
-  ngAfterViewChecked(): void {
-    if (this.summaryNeedsCheck) {
-    
-      this.summaryNeedsCheck = false;
+  loadSummary(): void {
+    if (!this.documentId) {
+      this.summaryText = '';
+      this.summaryError = 'ID do documento não encontrado.';
+      return;
     }
-  }
 
-loadSummary(): void {
-  if (!this.documentId) {
+    this.summaryError = null;
     this.summaryText = '';
-    this.summaryError = "ID do documento não encontrado.";
-    return;
+
+    this.chatService.getSummary(this.documentId).subscribe({
+      next: (data) => {
+        this.summaryText = data;
+      },
+      error: () => {
+        this.summaryText = '';
+        this.summaryError = 'Não foi possível carregar o resumo do documento.';
+      }
+    });
   }
-
-  this.summaryError = null;
-  this.summaryText = ''; 
-
-  this.chatService.getSummary(this.documentId).subscribe({
-    next: (data) => {
-      this.summaryText = data;
-      this.summaryNeedsCheck = true;
-    },
-    error: (err) => {
-      this.summaryText = ''; 
-      this.summaryError = 'Não foi possível carregar o resumo do documento.';
-    }
-  });
-}
 
   openSummaryModal(): void {
     this.showFullSummaryModal = true;
@@ -98,7 +86,7 @@ loadSummary(): void {
 
   toggleChatFullscreen(): void {
     this.isChatFullscreen = !this.isChatFullscreen;
-    setTimeout(() => this.scrollToBottom(false), 0);
+    setTimeout(() => this.scrollToBottom(), 0);
   }
 
   autoResize(textarea: HTMLTextAreaElement): void {
@@ -109,24 +97,24 @@ loadSummary(): void {
     const newHeight = Math.min(textarea.scrollHeight, maxHeight);
     textarea.style.height = newHeight + 'px';
 
-    this.scrollToBottom(false);
+    this.scrollToBottom();
   }
 
- onEnter(event: KeyboardEvent | Event): void {
-  const e = event as KeyboardEvent;
+  onEnter(event: KeyboardEvent | Event): void {
+    const e = event as KeyboardEvent;
 
-  if (e.shiftKey) {
-    return;
+    if (e.shiftKey) {
+      return;
+    }
+
+    e.preventDefault();
+
+    if (!this.newMessage.trim() || this.isLoading || !this.documentId) {
+      return;
+    }
+
+    this.sendMessage();
   }
-
-  e.preventDefault();
-
-  if (!this.newMessage.trim() || this.isLoading || !this.documentId) {
-    return;
-  }
-
-  this.sendMessage();
-}
 
   sendMessage(): void {
     if (!this.newMessage.trim() || !this.documentId) return;
@@ -142,29 +130,38 @@ loadSummary(): void {
       }
     });
 
-    this.scrollToBottom(true);
+    this.scrollToBottom();
 
     this.chatService.getResponse(this.documentId, currentMessage).subscribe({
       next: (iaResponse) => {
         this.messages.push(iaResponse);
         this.isLoading = false;
-        this.scrollToBottom(true);
+        this.scrollToBottom();
       },
-      error: (err) => {
+      error: () => {
         this.messages.push({
           sender: 'Montreal Bot',
           text: 'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.'
         });
         this.isLoading = false;
-        this.scrollToBottom(true);
+        this.scrollToBottom();
       }
     });
   }
 
-  private scrollToBottom(_: boolean): void {
-    if (!this.messagesContainer) return;
-    this.cdr.detectChanges();
-    const el = this.messagesContainer.nativeElement;
-    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-  }
+private scrollToBottom(): void {
+  if (!this.messagesContainer) return;
+
+  setTimeout(() => {
+    const el = this.messagesContainer.nativeElement;  
+    el.scrollTo({
+      top: el.scrollHeight,
+      behavior: 'smooth'
+    });
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth'
+    });
+  }, 0);
+}
 }

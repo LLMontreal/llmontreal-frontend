@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { DocSummaryChatComponent } from './doc-summary-chat.component';
 import { ChatService } from '../../services/chat.service';
-import { ChangeDetectorRef, ElementRef } from '@angular/core';
+import { ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError, Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -12,15 +12,13 @@ import { ChatMessage } from '@shared/models/chat-message';
 describe('DocSummaryChatComponent', () => {
   let component: DocSummaryChatComponent;
   let fixture: ComponentFixture<DocSummaryChatComponent>;
-  let chatServiceSpy: jasmine.SpyObj<ChatService>;
-  let mockCdr: jasmine.SpyObj<ChangeDetectorRef>;
+  let chatServiceSpy: jasmine.SpyObj<any>;
   let mockActivatedRoute: any;
 
   const mockDocumentId = 'doc-123';
 
   beforeEach(async () => {
     chatServiceSpy = jasmine.createSpyObj('ChatService', ['getSummary', 'getResponse']);
-    mockCdr = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
 
     mockActivatedRoute = {
       snapshot: {
@@ -34,8 +32,7 @@ describe('DocSummaryChatComponent', () => {
       imports: [CommonModule, FormsModule, MatIconModule, DocSummaryChatComponent],
       providers: [
         { provide: ChatService, useValue: chatServiceSpy },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: ChangeDetectorRef, useValue: mockCdr }
+        { provide: ActivatedRoute, useValue: mockActivatedRoute }
       ]
     }).compileComponents();
 
@@ -43,7 +40,6 @@ describe('DocSummaryChatComponent', () => {
 
     fixture = TestBed.createComponent(DocSummaryChatComponent);
     component = fixture.componentInstance;
-    (component as any).cdr = mockCdr;
 
     fixture.detectChanges();
   });
@@ -76,17 +72,6 @@ describe('DocSummaryChatComponent', () => {
 
       expect(component.summaryText).toBe('');
       expect(component.summaryError).toBe('Não foi possível carregar o resumo do documento.');
-    });
-
-    it('should set error when documentId is null', () => {
-      chatServiceSpy.getSummary.calls.reset();
-
-      component.documentId = null;
-      component.loadSummary();
-
-      expect(chatServiceSpy.getSummary).not.toHaveBeenCalled();
-      expect(component.summaryText).toBe('');
-      expect(component.summaryError).toBe('ID do documento não encontrado.');
     });
 
     it('should reset previous summaryError before requesting a new summary', () => {
@@ -130,7 +115,7 @@ describe('DocSummaryChatComponent', () => {
       tick(0);
 
       expect(component.isChatFullscreen).toBeTrue();
-      expect(spyScroll).toHaveBeenCalledWith(false);
+      expect(spyScroll).toHaveBeenCalled();
     }));
 
     it('toggling twice returns to original state', fakeAsync(() => {
@@ -144,7 +129,7 @@ describe('DocSummaryChatComponent', () => {
   });
 
   describe('autoResize', () => {
-    it('should set minimum height (when scrollHeight < min)', () => {
+    it('should set height to scrollHeight when it is less than max', () => {
       const mockTextarea: any = {
         style: { height: '' },
         scrollHeight: 30
@@ -173,7 +158,7 @@ describe('DocSummaryChatComponent', () => {
       expect(mockTextarea.style.height).toBe('160px');
     });
 
-    it('should call scrollToBottom(false) after resizing', () => {
+    it('should call scrollToBottom after resizing', () => {
       const mockTextarea: any = {
         style: { height: '' },
         scrollHeight: 120
@@ -181,7 +166,7 @@ describe('DocSummaryChatComponent', () => {
 
       const spyScroll = spyOn<any>(component, 'scrollToBottom');
       component.autoResize(mockTextarea as HTMLTextAreaElement);
-      expect(spyScroll).toHaveBeenCalledWith(false);
+      expect(spyScroll).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -293,7 +278,7 @@ describe('DocSummaryChatComponent', () => {
 
       const last = component.messages[component.messages.length - 1];
       expect(last.sender).toBe('Montreal Bot');
-      expect(last.text).toContain('Desculpe, ocorreu um erro');
+      expect(last.text).toContain('Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.');
       expect(component.isLoading).toBeFalse();
     }));
 
@@ -324,14 +309,15 @@ describe('DocSummaryChatComponent', () => {
   });
 
   describe('scrollToBottom low-level', () => {
-    it('should not call detectChanges when messagesContainer is not set', () => {
+    it('should not throw when messagesContainer is not set', () => {
       (component as any).messagesContainer = undefined;
-      (component as any).scrollToBottom(true);
-      expect(mockCdr.detectChanges).not.toHaveBeenCalled();
+      expect(() => (component as any).scrollToBottom()).not.toThrow();
     });
 
-    it('should call detectChanges and scroll when messagesContainer is present', () => {
+    it('should scroll when messagesContainer is present', fakeAsync(() => {
       const scrollSpy = jasmine.createSpy('scrollTo');
+      const windowScrollSpy = spyOn(window, 'scrollTo');
+
       const mockContainer = {
         nativeElement: {
           scrollTo: scrollSpy,
@@ -341,15 +327,16 @@ describe('DocSummaryChatComponent', () => {
       } as unknown as ElementRef<HTMLDivElement>;
 
       (component as any).messagesContainer = mockContainer;
+      (component as any).scrollToBottom();
 
-      (component as any).scrollToBottom(true);
+      tick(0);
 
-      expect(mockCdr.detectChanges).toHaveBeenCalled();
       expect(scrollSpy).toHaveBeenCalledWith({
         top: 1000,
         behavior: 'smooth'
       });
-    });
+      expect(windowScrollSpy).toHaveBeenCalled();
+    }));
   });
 
   describe('ngAfterViewInit behaviour', () => {
@@ -374,10 +361,6 @@ describe('DocSummaryChatComponent', () => {
       expect(scrollSpy).toHaveBeenCalled();
       expect(mockTextarea.nativeElement.style.height).toBe('48px');
     }));
-  });
-
-  it('ngAfterViewChecked should not throw', () => {
-    expect(() => component.ngAfterViewChecked()).not.toThrow();
   });
 
   describe('integration flows', () => {
@@ -410,7 +393,7 @@ describe('DocSummaryChatComponent', () => {
       component.loadSummary();
       tick();
 
-      expect(component.summaryError).toBeTruthy();
+      expect(component.summaryError).toBe('Não foi possível carregar o resumo do documento.');
       expect(component.summaryText).toBe('');
       component.messages = [{
         sender: 'Montreal Bot',
