@@ -2,13 +2,20 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { AppComponent } from './app.component';
+import { provideHttpClient } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent, HttpClientTestingModule],
+      imports: [
+        AppComponent,
+        MatSnackBarModule,
+        HttpClientTestingModule
+      ],
       providers: [
-        provideRouter([])
+        provideRouter([]),
+        provideHttpClient(),
       ]
     }).compileComponents();
   });
