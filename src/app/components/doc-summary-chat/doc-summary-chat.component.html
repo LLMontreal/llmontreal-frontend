@@ -9,7 +9,7 @@
 
       <button class="regenerate-button" (click)="openConfirmRegenerateModal()"
               [disabled]="isRegeneratingSummary || !documentId">
-        {{ isRegeneratingSummary ? 'Regenerando...' : 'Regenerar resumo' }}
+        {{ isRegeneratingSummary ? 'Regerar...' : 'Regerar resumo' }}
       </button>
     </div>
   </section>
@@ -40,7 +40,7 @@
           &times;
         </button>
 
-        <h2>Regenerar resumo</h2>
+        <h2>Regerar resumo</h2>
 
         <p>
           Tem certeza que deseja gerar um novo resumo para este documento?
@@ -63,9 +63,9 @@
                   [disabled]="isRegeneratingSummary">
             @if (isRegeneratingSummary) {
               <span class="spinner"></span>
-              <span>Regenerando...</span>
+              <span>Regerando...</span>
             } @else {
-              <span>Sim, regenerar</span>
+              <span>Sim, regerar</span>
             }
           </button>
         </div>
