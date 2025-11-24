@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
   private documentService = inject(DocumentService);
   private destroyRef = inject(DestroyRef);
 
-  selectedFilter: 'PROCESSING' | 'COMPLETED' | 'FAILED' | undefined;
+  selectedFilter: 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'PENDING' | undefined;
   documents: UiDocument[] = [];
 
   loading = false;
@@ -90,7 +90,7 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  onFilterChange(filter?: 'PROCESSING' | 'COMPLETED' | 'FAILED'): void {
+  onFilterChange(filter?: 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'PENDING'): void {
     this.selectedFilter = filter;
     this.page = 0;
     this.fetchDocuments();
@@ -122,6 +122,8 @@ export class DashboardComponent implements OnInit {
         return 'status-badge status-processando';
       case 'FAILED':
         return 'status-badge status-erro';
+      case 'PENDING':
+        return 'status-badge status-pendente';
       default:
         return 'status-badge status-default';
     }

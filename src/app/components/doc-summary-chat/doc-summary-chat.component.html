@@ -1,45 +1,34 @@
 <div class="page-container">
   <h1 class="main-title">Resumo e Análise do Documento</h1>
 
-  <section class="summary">
-    <div class="summary-actions">
-      <button class="see-more-button" (click)="openSummaryModal()">
-        Ver resumo
-      </button>
-
-      <button class="regenerate-button" (click)="openConfirmRegenerateModal()"
-        [disabled]="isRegeneratingSummary || !documentId">
-        {{ isRegeneratingSummary ? 'Regenerando...' : 'Regenerar resumo' }}
+  <section class="document-summary">
+    <div class="summary-header">
+      <h2>Resumo do Documento</h2>
+      <button class="refresh-button" (click)="openConfirmRegenerateModal()"
+        [disabled]="isRegeneratingSummary || !documentId" title="Regerar resumo">
+        <mat-icon [class.spinning]="isRegeneratingSummary">refresh</mat-icon>
       </button>
     </div>
-  </section>
 
-  @if (showFullSummaryModal) {
-  <div class="modal-overlay" (click)="closeSummaryModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <button class="modal-close-button" (click)="closeSummaryModal()">
-        &times;
-      </button>
-
-      <h2>Resumo Completo</h2>
-
+    <div class="summary-content">
       @if (summaryError) {
       <div class="summary-error">{{ summaryError }}</div>
       } @else {
       <p>{{ summaryText }}</p>
       }
     </div>
-  </div>
-  }
+  </section>
 
   @if (confirmRegenerateModalOpen) {
   <div class="modal-overlay" (click)="closeConfirmRegenerateModal()">
     <div class="modal-content small" (click)="$event.stopPropagation()">
+      @if (!isRegeneratingSummary) {
       <button class="modal-close-button" (click)="closeConfirmRegenerateModal()">
         &times;
       </button>
+      }
 
-      <h2>Regenerar resumo</h2>
+      <h2>Regerar resumo</h2>
 
       <p>
         Tem certeza que deseja gerar um novo resumo para este documento?
@@ -53,18 +42,19 @@
       }
 
       <div class="confirm-actions">
-        <button class="secondary-button" type="button" (click)="closeConfirmRegenerateModal()"
-          [disabled]="isRegeneratingSummary">
+        @if (!isRegeneratingSummary) {
+        <button class="secondary-button" type="button" (click)="closeConfirmRegenerateModal()">
           Cancelar
         </button>
+        }
 
         <button class="primary-button" type="button" (click)="confirmRegenerateSummary()"
           [disabled]="isRegeneratingSummary">
           @if (isRegeneratingSummary) {
           <span class="spinner"></span>
-          <span>Regenerando...</span>
+          <span>Regerando...</span>
           } @else {
-          <span>Sim, regenerar</span>
+          <span>Sim, regerar</span>
           }
         </button>
       </div>

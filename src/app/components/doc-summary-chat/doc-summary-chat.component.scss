@@ -65,44 +65,78 @@ $breakpoints: (
   }
 }
 
-.summary {
+.document-summary {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto 16px;
-  display: flex;
-  justify-content: flex-end;
+  background-color: var(--color-background-light, --color-background-dark);
+  border: 1px solid var(--color-border-light, --color-border-dark);
+  border-radius: $radius-md;
+  padding: 16px;
   box-sizing: border-box;
-}
 
-.summary-actions {
-  display: flex;
-  gap: 8px;
-}
+  @include breakpoint("mobile") {
+    padding: 12px;
+  }
 
-.see-more-button {
-  @extend %button-reset;
+  .summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 
-  color: var(--color-text-dark);
-  background-color: var(--color-primary);
-  padding: 8px 24px;
-  font-weight: 500;
-  font-size: 1rem;
-  border-radius: 12px;
-}
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+  }
 
-.regenerate-button {
-  @extend %button-reset;
+  .refresh-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-light);
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
 
-  color: var(--color-text-dark);
-  background-color: var(--color-primary);
-  padding: 8px 24px;
-  font-weight: 500;
-  font-size: 1rem;
-  border-radius: 12px;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--color-primary);
+    }
 
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+
+      &.spinning {
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+
+  .summary-content {
+    p {
+      margin: 0;
+      line-height: 1.6;
+      color: var(--color-text-light);
+      text-align: justify;
+    }
+
+    .summary-error {
+      color: #d32f2f;
+      font-weight: 500;
+    }
   }
 }
 
@@ -226,6 +260,7 @@ $breakpoints: (
   border-radius: $radius-md;
   border: 1px solid var(--color-border-light);
   padding: 16px;
+  margin-bottom: 50px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
