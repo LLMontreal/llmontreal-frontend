@@ -433,9 +433,9 @@ $breakpoints: (
 }
 @keyframes slideIn {
   from {transform: translateY(-30px);
-        opacity: 0;}
+    opacity: 0;}
   to {transform: translateY(0);
-      opacity: 1;}
+    opacity: 1;}
 }
 @keyframes spin {
   to { transform: rotate(360deg); }

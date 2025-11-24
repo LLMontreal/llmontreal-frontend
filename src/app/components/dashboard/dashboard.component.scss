@@ -326,3 +326,13 @@ body.dark .icon-chat {
     height: 1.75rem;
   }
 }
+
+.status-pendente {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+:host-context(body.dark) .status-pendente {
+  background: #713f12;
+  color: #fef08a;
+}

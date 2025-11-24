@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChatService } from '@services/chat.service';
 import { ChatMessage } from '@shared/models/chat-message';
+import { Subscription, interval, of } from 'rxjs';
+import { take, switchMap, filter, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-doc-summary-chat',
@@ -14,7 +16,7 @@ import { ChatMessage } from '@shared/models/chat-message';
   templateUrl: './doc-summary-chat.component.html',
   styleUrls: ['./doc-summary-chat.component.scss']
 })
-export class DocSummaryChatComponent implements OnInit, AfterViewInit {
+export class DocSummaryChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
   documentId: string | null = null;
   messages: ChatMessage[] = [];
@@ -23,12 +25,14 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
   isChatFullscreen = false;
 
   summaryText = '';
-  summaryError: string | null = null;
   showFullSummaryModal = false;
+
+  summaryError: string | null = null;
 
   confirmRegenerateModalOpen = false;
   isRegeneratingSummary = false;
   regenerateError: string | null = null;
+  private pollSubscription: Subscription | null = null;
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('summaryParagraph') summaryParagraph!: ElementRef<HTMLParagraphElement>;
@@ -61,6 +65,12 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.pollSubscription) {
+      this.pollSubscription.unsubscribe();
+    }
+  }
+
   loadSummary(): void {
     if (!this.documentId) {
       this.summaryText = '';
@@ -90,6 +100,7 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
     this.showFullSummaryModal = false;
   }
 
+
   openConfirmRegenerateModal(): void {
     this.regenerateError = null;
     this.confirmRegenerateModalOpen = true;
@@ -105,35 +116,59 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit {
 
     this.isRegeneratingSummary = true;
     this.regenerateError = null;
+    const oldSummary = this.summaryText;
     this.summaryText = 'Gerando novo resumo, aguarde alguns instantes...';
 
     this.chatService.regenerateSummary(this.documentId).subscribe({
-      next: () => {
-        setTimeout(() => {
-          this.loadSummary();
-          this.isRegeneratingSummary = false;
-          this.confirmRegenerateModalOpen = false;
-          this.snackBar.open('Resumo regenerado com sucesso!', 'Fechar', {
-            duration: 3000,
-            horizontalPosition: 'center',
-            panelClass: ['custom-snackbar'],
-            verticalPosition: 'bottom',
-          });
-        }, 5000);
-      },
+      next: () => this.pollForSummaryUpdate(oldSummary),
       error: () => {
-        this.isRegeneratingSummary = false;
-        this.summaryText = '';
-        this.regenerateError = 'Não foi possível solicitar a regeneração do resumo.';
-
-        this.snackBar.open('Erro ao regenerar resumo.', 'Fechar', {
-          duration: 3000,
-          horizontalPosition: 'center',
-          verticalPosition: 'bottom',
-          panelClass: ['custom-snackbar']
-        });
+        // Assume timeout/async processing, start polling
+        this.pollForSummaryUpdate(oldSummary);
       }
     });
+  }
+
+  private pollForSummaryUpdate(oldSummary: string): void {
+    if (!this.documentId) return;
+
+    this.pollSubscription = interval(2000).pipe(
+      take(30), // 60 seconds max
+      switchMap(() => this.chatService.getSummary(this.documentId!).pipe(
+        catchError(() => of(oldSummary))
+      )),
+      filter(newSummary => newSummary !== oldSummary && newSummary !== ''),
+      take(1)
+    ).subscribe({
+      next: (newSummary) => {
+        this.summaryText = newSummary;
+        this.finishRegeneration(true);
+      },
+      complete: () => {
+        if (this.isRegeneratingSummary) {
+          this.finishRegeneration(false);
+        }
+      }
+    });
+  }
+
+  private finishRegeneration(success: boolean): void {
+    this.isRegeneratingSummary = false;
+    if (success) {
+      this.confirmRegenerateModalOpen = false;
+      this.snackBar.open('Resumo regerado com sucesso!', 'Fechar', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        panelClass: ['custom-snackbar'],
+        verticalPosition: 'bottom',
+      });
+    } else {
+      this.regenerateError = 'Não foi possível regerar o resumo. Tente novamente.';
+      this.summaryText = 'Falha ao atualizar o resumo.';
+    }
+    if (this.pollSubscription) {
+      this.pollSubscription.unsubscribe();
+      this.pollSubscription = null;
+    }
   }
 
   toggleChatFullscreen(): void {
