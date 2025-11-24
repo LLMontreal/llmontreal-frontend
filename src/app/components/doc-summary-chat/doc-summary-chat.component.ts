@@ -25,6 +25,8 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, OnDestroy
   isChatFullscreen = false;
 
   summaryText = '';
+  showFullSummaryModal = false;
+
   summaryError: string | null = null;
 
   confirmRegenerateModalOpen = false;
@@ -89,6 +91,15 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, OnDestroy
       }
     });
   }
+
+  openSummaryModal(): void {
+    this.showFullSummaryModal = true;
+  }
+
+  closeSummaryModal(): void {
+    this.showFullSummaryModal = false;
+  }
+
 
   openConfirmRegenerateModal(): void {
     this.regenerateError = null;
