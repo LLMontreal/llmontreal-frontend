@@ -50,8 +50,6 @@ export class ChatService {
     return this.http.post<void>(
       `${this.apiUrl}/documents/${documentId}/summary/regenerate`,
       {}
-    ).pipe(
-      catchError(() => throwError(() => new Error('Falha ao solicitar regeneração do resumo.')))
     );
   }
 }
