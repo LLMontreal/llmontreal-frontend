@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap");
 
 .main-header {
-  padding: 12px 24px;
+  padding: 0px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -188,8 +188,9 @@ body.dark .theme-toggle {
   display: flex;
   align-items: center;
   justify-content: flex-start; 
-  gap: 2rem; 
+  column-gap: 2rem; 
   width: auto;
+  height: 100%;
 }
 
 
@@ -197,5 +198,15 @@ body.dark .theme-toggle {
 .header-right {
   display: flex;
   align-items: center;
-  gap: 1rem;
+}
+.header-divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 0;
+  background-color: var(--color-border-light);
+  opacity: 1;
+}
+
+body.dark .header-divider {
+  background-color: var(--color-border-dark);
 }

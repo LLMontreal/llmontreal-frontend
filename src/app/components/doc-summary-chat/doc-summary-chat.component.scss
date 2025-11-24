@@ -1,0 +1,442 @@
+@use "sass:map";
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 18px;
+$radius-circle: 50%;
+$z-index-modal: 1000;
+$z-index-fullscreen-chat: 1100;
+
+$shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+$shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+$breakpoints: (
+  "tablet": "(max-width: 1024px)",
+  "mobile": "(max-width: 767px)"
+);
+
+@mixin flex-center($justify: center, $align: center) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin transition($property: all, $duration: 0.2s, $timing: ease) {
+  transition: $property $duration $timing;
+}
+
+@mixin breakpoint($size) {
+  @if map.has-key($breakpoints, $size) {
+    @media screen and #{map.get($breakpoints, $size)} {
+      @content;
+    }
+  }
+}
+
+%button-reset {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+%centered-message-box {
+  @include flex-center;
+  height: 100%;
+  min-height: 100px;
+  color: #888;
+}
+
+.page-container {
+  @include breakpoint("mobile") {
+    padding: 0 12px 24px;
+  }
+}
+
+.main-title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 16px 0 24px;
+
+  @include breakpoint("mobile") {
+    font-size: 1.6rem;
+    margin: 12px 0 20px;
+  }
+}
+
+.summary {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 16px;
+  display: flex;
+  justify-content: flex-end;
+  box-sizing: border-box;
+}
+
+.summary-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.see-more-button {
+  @extend %button-reset;
+
+  color: var(--color-text-dark);
+  background-color: var(--color-primary);
+  padding: 8px 24px;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 12px;
+}
+
+.regenerate-button {
+  @extend %button-reset;
+
+  color: var(--color-text-dark);
+  background-color: var(--color-primary);
+  padding: 8px 24px;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 12px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.modal-overlay {
+  @include flex-center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: $z-index-modal;
+}
+
+.modal-content {
+  background-color: var(--color-background-light, --color-background-light);
+  padding: 24px 32px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light, --color-border-dark);
+  max-width: 800px;
+  max-height: 800px;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: $shadow-lg;
+  animation: slideIn 0.3s ease-out;
+  text-align: justify;
+  scrollbar-width: thin;
+
+  @include breakpoint("mobile") {
+    width: 95%;
+    padding: 20px 16px;
+  }
+
+  h2 {
+    margin-top: 0;
+    text-align: left;
+  }
+}
+
+.modal-content.small {
+  max-width: 520px;
+}
+
+.modal-close-button {
+  @extend %button-reset;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 2rem;
+  color: #888;
+
+  &:hover {
+    color: var(--color-text-light);
+  }
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.primary-button {
+  @extend %button-reset;
+  @include flex-center(flex-center, center);
+
+  background-color: var(--color-primary, #007bff);
+  color: var(--color-text-dark);
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 500;
+  gap: 8px;
+  @include transition(background-color);
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.secondary-button {
+  @extend %button-reset;
+
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #ffffff;
+  animation: spin 0.8s linear infinite;
+}
+
+.fullscreen-button {
+  @extend %button-reset;
+  color: var(--color-text-light);
+  padding: 4px;
+  opacity: 0.6;
+  @include transition(opacity);
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.chat-card {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: $radius-md;
+  border: 1px solid var(--color-border-light);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 480px;
+  max-height: 900px;
+  overflow: visible;
+  @include transition;
+
+  @include breakpoint("mobile") {
+    min-height: 480px;
+    max-height: 900px;
+    padding: 12px;
+  }
+
+  .chat-header {
+    @include flex-center(space-between);
+    padding-bottom: 10px;
+    flex-shrink: 0;
+
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+  }
+
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    border: none;
+    z-index: $z-index-fullscreen-chat;
+    background-color: var(--color-background-light, --color-background-dark);
+    overflow: hidden;
+  }
+}
+
+.chat-messages {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 16px 8px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+
+  @include breakpoint("mobile") {
+    padding: 8px 4px;
+  }
+}
+
+.message-wrapper {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 16px;
+
+  .message-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 85%;
+
+    @include breakpoint("mobile") {
+      max-width: 90%;
+    }
+  }
+
+  .sender {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    padding: 0 8px;
+  }
+
+  .message {
+    padding: 12px;
+    border-radius: $radius-lg;
+    line-height: 1.5;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  &.ia {
+    justify-content: flex-start;
+
+    .sender {
+      color: #555;
+    }
+
+    .message {
+      background: #d3dbe7;
+      border-bottom-left-radius: $radius-sm;
+      max-width: 700px;
+    }
+  }
+
+  &.user {
+    justify-content: flex-end;
+    .sender {
+      color: #666;
+      text-align: right;
+    }
+    .message {
+      background: var(--color-primary);
+      border-radius: $radius-lg $radius-lg $radius-sm $radius-lg;
+      color: var(--color-text-dark);
+      max-width: 700px;
+    }
+  }
+}
+
+.chat-input {
+  padding-top: 12px;
+  padding-bottom: 4px;
+  flex-shrink: 0;
+
+  form {
+    @include flex-center(stretch);
+    align-items: center;
+    gap: 10px;
+  }
+
+  .chat-textarea {
+    flex: 1 1 auto;
+    min-height: 48px;
+    max-height: 160px;
+    border-radius: 17px;
+    padding: 12px 16px;
+    font-family: inherit;
+
+    background-color: var(--color-background-light, --color-background-dark);
+    color: var(--color-text-light, --color-text-dark);
+    border: 1px solid var(--color-border-light, --color-border-dark);
+    resize: none;
+    overflow-y: hidden;
+    overflow-x: hidden;
+
+    @include breakpoint("mobile") {
+      font-size: 0.95rem;
+    }
+  }
+
+  button {
+    @include flex-center;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: $radius-circle;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    @include transition(background-color);
+
+    &:hover {
+      background-color: #0056b3;
+    }
+
+    &:disabled {
+      background-color: #a0a0a0;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.typing-indicator {
+  @include flex-center;
+  gap: 6px;
+
+  span {
+    height: 7px;
+    width: 7px;
+    background: #9e9e9e;
+    border-radius: 3px;
+    display: inline-block;
+    animation: bounce 1.4s infinite ease-in-out both;
+  }
+}
+
+:host-context(.dark) {
+  .message-wrapper {
+    &.ia {
+      .message {
+        background: #1a2534;
+        border: 1px solid #223146;
+        color: var(--color-text-dark);
+      }
+    }
+
+    &.user .sender {
+      color: #d2e2ff;
+    }
+  }
+}
+@keyframes bounce {
+  0%,
+  80%,
+  100% {transform: scale(0);}
+
+  40% {transform: scale(1); }
+}
+@keyframes fadeIn {
+  from {opacity: 0; }
+  to {opacity: 1;}
+}
+@keyframes slideIn {
+  from {transform: translateY(-30px);
+        opacity: 0;}
+  to {transform: translateY(0);
+      opacity: 1;}
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

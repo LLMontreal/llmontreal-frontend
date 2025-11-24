@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DocumentDTO, translateDocumentStatus } from '../../models/document.model';
@@ -21,7 +22,15 @@ interface UiDocument {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatPaginatorModule, MatButtonModule, RouterModule, FileTypePipe],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatButtonModule,
+    MatSortModule,
+    RouterModule,
+    FileTypePipe
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -31,11 +40,13 @@ export class DashboardComponent implements OnInit {
 
   selectedFilter: 'PROCESSING' | 'COMPLETED' | 'FAILED' | undefined;
   documents: UiDocument[] = [];
-  
+
   loading = false;
   page = 0;
   size = 10;
   totalElements = 0;
+  sortField: string = 'createdAt';
+  sortDirection: 'asc' | 'desc' = 'desc';
 
   ngOnInit(): void {
     this.fetchDocuments();
@@ -54,7 +65,7 @@ export class DashboardComponent implements OnInit {
       id: dto.id,
       name: dto.fileName,
       type: dto.fileType,
-      uploadDate: new Date(dto.createdAt), 
+      uploadDate: new Date(dto.createdAt),
       status: dto.status,
       icon: this.fileTypeToIcon(dto.fileType)
     };
@@ -64,7 +75,8 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
     const status = this.selectedFilter;
 
-    this.documentService.getDocuments(this.page, this.size, status)
+    this.documentService
+      .getDocuments(this.page, this.size, status, this.sortField, this.sortDirection)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (page) => {
@@ -84,6 +96,23 @@ export class DashboardComponent implements OnInit {
     this.fetchDocuments();
   }
 
+  onSortChange(sort: Sort): void {
+    const fieldMap: { [key: string]: string } = {
+      type: 'fileType',
+      uploadDate: 'createdAt'
+    };
+
+    if (sort.direction) {
+      this.sortField = fieldMap[sort.active];
+      this.sortDirection = sort.direction as 'asc' | 'desc';
+    } else {
+      this.sortField = 'createdAt';
+      this.sortDirection = 'desc';
+    }
+
+    this.page = 0;
+    this.fetchDocuments();
+  }
 
   getStatusClass(status: string): string {
     switch (status) {

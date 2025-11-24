@@ -105,6 +105,7 @@ body, input, button, textarea { font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1rem);
   --color-border-light: var(--color-border-dark);
 }
 
+
 // BASE GLOBAL
 *,
 *::before,
@@ -114,14 +115,18 @@ body, input, button, textarea { font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1rem);
 
 html, body {
   height: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: var(--font-family-display);
   color: var(--color-text-light);
   transition: background-color 0.3s ease, color 0.3s ease;
+
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  
+  
 }
 
 app-root {
@@ -131,7 +136,7 @@ app-root {
 }
 
 .main-content {
-  flex: 1;
+  flex: 1; 
   display: flex;
   flex-direction: column;
 }
