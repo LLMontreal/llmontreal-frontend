@@ -7,6 +7,7 @@ import { ThemeService } from '../../services/theme.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { DocumentService } from '../../services/document.service';
+import { LogService } from '@services/logs.service';
 
 
 
@@ -25,6 +26,8 @@ export class HeaderComponent implements OnInit {
 
   private themeService = inject(ThemeService);
   private documentService = inject(DocumentService);
+  private logService = inject(LogService);
+
   isDark: Signal<boolean> = computed(() => this.themeService.theme() === 'dark');
 
 
@@ -45,5 +48,9 @@ export class HeaderComponent implements OnInit {
   
   toggleTheme() {
     this.themeService.toggleTheme();
+  }
+
+  downloadApiLogs() {
+    this.logService.getApiLogs();
   }
 }

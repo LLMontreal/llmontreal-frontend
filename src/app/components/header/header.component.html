@@ -4,27 +4,35 @@
       <img src="assets/logo-LlMontreal.svg" alt="LlMontreal logo" class="logo-icon" />
       <span class="brand-name">LLMontreal</span>
     </a>
-      <div class="header-divider"></div>
+    <div class="header-divider"></div>
 
-      <nav class="header-nav" aria-label="Primary Navigation">
-        <a routerLink="/upload-document" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
-  Upload de Documento
-</a>
+    <nav class="header-nav" aria-label="Primary Navigation">
+      <a routerLink="/upload-document" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+        Upload de Documento
+      </a>
 
-<a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
-  Dashboard
-</a>
+      <a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+        Dashboard
+      </a>
 
-      </nav>
-    </div>
+    </nav>
+  </div>
 
-    <div class="header-right">
-      <button type="button" class="mobile-menu-button" aria-label="Abrir menu" aria-expanded="{{isMenuOpen}}" (click)="toggleMenu()">
-        <mat-icon>menu</mat-icon>
-      </button>
+  <div class="header-right">
+    <button type="button" class="mobile-menu-button" aria-label="Abrir menu" aria-expanded="{{isMenuOpen}}"
+      (click)="toggleMenu()">
+      <mat-icon>menu</mat-icon>
+    </button>
 
-        <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark() ? 'Ativar modo claro' : 'Ativar modo escuro'">
+    <button class="theme-toggle" (click)="downloadApiLogs()"
+      [attr.aria-label]="isDark() ? 'Ativar modo claro' : 'Ativar modo escuro'">
+      <mat-icon>download</mat-icon>
+    </button>
+
+    <button class="theme-toggle" (click)="toggleTheme()"
+      [attr.aria-label]="isDark() ? 'Ativar modo claro' : 'Ativar modo escuro'">
       <i class="fas" [ngClass]="isDark() ? 'fa-sun' : 'fa-moon'"></i>
     </button>
-    </div>
+
+  </div>
 </header>

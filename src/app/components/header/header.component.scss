@@ -199,6 +199,11 @@ body.dark .theme-toggle {
   display: flex;
   align-items: center;
 }
+
+.header-right {
+  gap: .5em;
+}
+
 .header-divider {
   width: 1px;
   align-self: stretch;
