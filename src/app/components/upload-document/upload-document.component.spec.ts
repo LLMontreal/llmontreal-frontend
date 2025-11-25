@@ -60,7 +60,6 @@ describe('UploadDocumentComponent', () => {
     fixture.detectChanges();
   });
 
-  //INITIAL STATE
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
@@ -71,7 +70,6 @@ describe('UploadDocumentComponent', () => {
     expect(component.selectedFile).toBeUndefined();
   });
 
-  //VALIDATION
   describe('File Validation', () => {
     it('should reject invalid file type', () => {
       component.onFileSelected({ target: { files: [mockFileInvalid] } } as any);
@@ -106,7 +104,6 @@ describe('UploadDocumentComponent', () => {
     });
   });
 
-  //DRAG & DROP
   describe('Drag and Drop', () => {
     it('should set isDragging true on dragover', () => {
       component.onDragOver(new DragEvent('dragover'));
@@ -145,7 +142,6 @@ describe('UploadDocumentComponent', () => {
     });
   });
 
-  //UPLOAD PROCESS
   describe('Upload Process', () => {
     beforeEach(() => {
       component.selectedFile = mockFilePDF;
@@ -195,7 +191,6 @@ describe('UploadDocumentComponent', () => {
     });
   });
 
-  //CANCEL
   describe('Cancel Upload', () => {
     it('should cancel and unsubscribe', () => {
       component.selectedFile = mockFilePDF;
@@ -212,7 +207,6 @@ describe('UploadDocumentComponent', () => {
     });
   });
 
-  // DESTROY
   describe('ngOnDestroy', () => {
     it('should unsubscribe on destroy', () => {
       component.selectedFile = mockFilePDF;

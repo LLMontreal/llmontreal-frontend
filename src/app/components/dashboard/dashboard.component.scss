@@ -16,11 +16,6 @@ button.primary-btn {
   color: #fff;
 }
 
-button.primary-btn:hover,
-button.primary-btn:hover {
-  background-color: rgba(var(--color-primary-rgb), 0.9);
-}
-
 .primary-btn mat-icon {
   font-size: 1.1rem;
 }
@@ -125,6 +120,17 @@ button.primary-btn:hover {
   color: #6B7280;
 }
 
+.table-th:nth-child(2),
+.table-th:nth-child(3),
+.table-th:nth-child(4),
+.table-th:last-child,
+.table-td:nth-child(3),
+.table-td:nth-child(4),
+.table-td:last-child {
+  text-align: center;
+}
+
+
 :host-context(body.dark) .table-th {
   color: #9CA3AF;
 }
@@ -167,11 +173,6 @@ button.primary-btn:hover {
   max-width: 180px;
 }
 
-.table-th:last-child,
-.table-td:last-child {
-  text-align: center;
-}
-
 .table-td:last-child .action-link {
   display: inline-flex;
   align-items: center;
@@ -187,8 +188,11 @@ button.primary-btn:hover {
 
 .status-badge {
   display: inline-flex;
-  align-items: center;
-  padding: 0.125rem 0.625rem;
+  align-items: center; 
+  text-align: center;
+  justify-content: center; 
+  min-width: 90px; 
+  padding: 0.25rem 0.625rem; 
   border-radius: 10px;
   font-size: 0.75rem;
   font-weight: 600;

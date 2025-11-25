@@ -122,7 +122,6 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, OnDestroy
     this.chatService.regenerateSummary(this.documentId).subscribe({
       next: () => this.pollForSummaryUpdate(oldSummary),
       error: () => {
-        // Assume timeout/async processing, start polling
         this.pollForSummaryUpdate(oldSummary);
       }
     });
@@ -132,7 +131,7 @@ export class DocSummaryChatComponent implements OnInit, AfterViewInit, OnDestroy
     if (!this.documentId) return;
 
     this.pollSubscription = interval(2000).pipe(
-      take(30), // 60 seconds max
+      take(30), 
       switchMap(() => this.chatService.getSummary(this.documentId!).pipe(
         catchError(() => of(oldSummary))
       )),

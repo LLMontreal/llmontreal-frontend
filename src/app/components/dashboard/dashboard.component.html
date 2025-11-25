@@ -1,10 +1,7 @@
   <div class="container">
     <div class="layout-between header-row">
       <h1>Dashboard de Documentos</h1>
-      <button mat-raised-button [routerLink]="['/upload-document']" class="primary-btn">
-        <mat-icon>upload_file</mat-icon>
-        <span class="truncate">Enviar Novo Documento</span>
-      </button>
+     
     </div>
 
     <div class="dash-actions">
@@ -51,8 +48,8 @@
       <div class="overflow-x-auto">
         <table class="table" matSort (matSortChange)="onSortChange($event)" matSortActive="uploadDate"
           matSortDirection="desc">
-        <thead>
-            <tr class="table-head">
+          <thead>
+            <tr class="table-head ">
               <th class="table-th">Nome do Arquivo</th>
             <th class="table-th" mat-sort-header="type">
               Tipo
