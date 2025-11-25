@@ -18,7 +18,7 @@ export class ChatService {
   getResponse(documentId: string, prompt: string): Observable<ChatMessage> {
     const body = {
       model: 'gemma3:4b',
-      prompt,
+      prompt: prompt,
       stream: false
     };
 
