@@ -1,59 +1,139 @@
-# FrontendLlmontreal
+# LLMontreal — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.6.
+Frontend do projeto **LLMontreal**, desenvolvido em **Angular 20**. Este README resume o que foi feito, como rodar o projeto e como gerar build para produção.
 
-## Development server
+## 🔎 Visão Geral
 
-To start a local development server, run:
+Aplicação Angular modular, com componentes, serviços e rotas organizados. Consome APIs externas via HttpClient e utiliza ambientes separados para dev e produção.
+
+## 🛠 Tecnologias
+
+* Angular 20 (CLI 20.0.6)
+* TypeScript
+* Angular Router
+* RxJS
+* HttpClient
+* Karma + Jasmine (testes)
+
+## 📌 O que já está implementado
+
+* Estrutura padrão Angular CLI
+* Módulos e componentes básicos
+* Roteamento inicial
+* Configuração para build, serve e testes
+* Ambientes (dev/prod)
+* HttpClient preparado para integração com API externa
+
+(*Adicione aqui seus principais componentes/rotas reais, se quiser.*)
+
+## 📥 Pré-requisitos
+
+* Node.js 18+ ou 20+
+* npm ou yarn
+* Angular CLI 20.x
+
+## ▶ Como executar (desenvolvimento)
+
+```bash
+git clone https://github.com/LLMontreal/llmontreal-frontend.git
+cd llmontreal-frontend
+npm install
+```
+
+Configure o ambiente em `src/environments/`:
+
+```ts
+export const environment = {
+  production: false,
+  apiBaseUrl: 'http://localhost:3000/api'
+};
+```
+
+Inicie:
 
 ```bash
 ng serve
+# ou
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Acesse: [http://localhost:4200/](http://localhost:4200/)
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 📦 Build de produção
 
 ```bash
-ng generate component component-name
+ng build --configuration production
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Arquivos gerados em: `dist/llmontreal-frontend/`.
+
+## 🧪 Testes
 
 ```bash
-ng generate --help
+ng test       # unitários
+ng e2e        # se houver testes e2e configurados
 ```
 
-## Building
+## 📁 Estrutura (resumo)
 
-To build the project run:
+```
+src/
+  app/          componentes, serviços, rotas
+  assets/
+  environments/
+angular.json
+package.json
+```
+
+## ⚙ Variáveis de ambiente
+
+Arquivos:
+
+* `environment.ts` (dev)
+* `environment.prod.ts` (prod)
+
+Principais chaves:
+
+* `apiBaseUrl`
+* Outras integrações (Sentry, Maps, etc)
+
+> Evite commitar credenciais.
+
+## 🐳 Deploy com Docker (exemplo)
+
+```dockerfile
+FROM node:18 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build -- --configuration=production
+
+FROM nginx:stable-alpine
+COPY --from=build /app/dist/llmontreal-frontend /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx","-g","daemon off;"]
+```
+
+Build/run:
 
 ```bash
-ng build
+docker build -t llmontreal-frontend .
+docker run -p 8080:80 llmontreal-frontend
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🛠 Problemas comuns
 
-## Running unit tests
+* **Erro em dependências**: remover `node_modules` e rodar `npm ci`.
+* **CORS**: configure no backend ou use `proxy.conf.json`.
+* **Porta ocupada**: `ng serve --port 4300`.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 🤝 Contribuição
 
-```bash
-ng test
-```
+1. Abra uma issue
+2. Crie um branch (`feature/...` ou `fix/...`)
+3. Faça PR explicando a alteração
 
-## Running end-to-end tests
+## 📫 Contato
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Equipe LLMontreal — abra uma issue para dúvidas.
