@@ -57,6 +57,8 @@ export class DashboardComponent implements OnInit {
     if (ft.includes('pdf')) return 'picture_as_pdf';
     if (ft.includes('doc') || ft.includes('word')) return 'description';
     if (ft.includes('ppt') || ft.includes('presentation')) return 'slideshow';
+    if (ft.includes('image') || ft.includes('png') || ft.includes('jpeg') || ft.includes('jpg')) return 'image';
+    if (ft.includes('zip') || ft.includes('compressed')) return 'folder_zip';
     return 'insert_drive_file';
   }
 
