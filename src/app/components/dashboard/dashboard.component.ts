@@ -124,8 +124,6 @@ export class DashboardComponent implements OnInit {
         return 'status-badge status-processando';
       case 'FAILED':
         return 'status-badge status-erro';
-      case 'PENDING':
-        return 'status-badge status-pendente';
       default:
         return 'status-badge status-default';
     }
