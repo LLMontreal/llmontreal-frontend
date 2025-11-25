@@ -1,139 +1,313 @@
-# LLMontreal — Frontend
+# LLMontreal - Frontend Angular
 
-Frontend do projeto **LLMontreal**, desenvolvido em **Angular 20**. Este README resume o que foi feito, como rodar o projeto e como gerar build para produção.
+Aplicação web desenvolvida durante a Sprint Surpresa do programa Acelera Maker, oferecido pela Montreal.
 
-## 🔎 Visão Geral
+---
 
-Aplicação Angular modular, com componentes, serviços e rotas organizados. Consome APIs externas via HttpClient e utiliza ambientes separados para dev e produção.
+## Índice
 
-## 🛠 Tecnologias
+* Sobre o Projeto
+* Arquitetura e Fluxo da Aplicação
+* Tecnologias Utilizadas
+* Funcionalidades
+* Estrutura do Projeto
+* Pré-requisitos
+* Configuração do Ambiente
+* Executando a Aplicação
+* Comunicação com a API
+* Testes (TDD com Jasmine)
+* Responsividade
+* Tema Claro e Escuro
+* Logs e Monitoramento
+* Contribuindo
+* Licença
 
-* Angular 20 (CLI 20.0.6)
+---
+
+## Sobre o Projeto
+
+O LLMontreal Frontend é uma interface moderna desenvolvida em Angular 17 para interação com o backend da plataforma LLMontreal.
+O sistema permite upload de documentos, visualização do processamento, leitura do resumo gerado e interação via chat baseado no conteúdo extraído.
+
+### O que o frontend faz?
+
+* Upload de documentos com barra de progresso
+* Exibição do status de processamento do documento
+* Visualização do texto resumido pela IA
+* Chat com perguntas e respostas contextualizadas
+* Feedback visual claro para erros e operações
+* Alternância entre tema claro e escuro
+* Layout totalmente responsivo
+
+---
+
+## Arquitetura e Fluxo da Aplicação
+
+Fluxo de interação com usuário e API:
+
+```
+┌─────────────────────────────────────────────┐
+│                  INTERFACE                  │
+│        LLMontreal Angular Frontend          │
+└───────────────────────────┬─────────────────┘
+                            │
+                            ▼
+              ┌──────────────────────────┐
+              │  UploadDocumentComponent │
+              └───────────┬──────────────┘
+                          │
+                          ▼
+              ┌──────────────────────────┐
+              │  DocumentService         │
+              │  POST /documents         │
+              └───────────┬──────────────┘
+                          │
+                          ▼
+              Exibição de progresso e status
+                          │
+                          ▼
+              ┌──────────────────────────┐
+              │ DashboardComponent        │
+              │ - Status do documento    │
+              │ - Resumo                 │
+              └───────────┬──────────────┘
+                          │
+                          ▼
+              ┌──────────────────────────┐
+              │ DocSummaryChatComponent  │
+              │ POST /chat/{documentId} │
+              └───────────┬──────────────┘
+                          │
+                          ▼
+                Interface de conversação
+```
+
+O frontend isola responsabilidades por meio de serviços, componentes e modelos tipados, mantendo uma arquitetura modular, reativa e escalável.
+
+---
+
+## Tecnologias Utilizadas
+
+### Framework e Linguagem
+
+* Angular 17
 * TypeScript
-* Angular Router
-* RxJS
-* HttpClient
-* Karma + Jasmine (testes)
 
-## 📌 O que já está implementado
+### Testes
 
-* Estrutura padrão Angular CLI
-* Módulos e componentes básicos
-* Roteamento inicial
-* Configuração para build, serve e testes
-* Ambientes (dev/prod)
-* HttpClient preparado para integração com API externa
+* Jasmine
+* Karma
 
-(*Adicione aqui seus principais componentes/rotas reais, se quiser.*)
+---
 
-## 📥 Pré-requisitos
+## Funcionalidades
 
-* Node.js 18+ ou 20+
-* npm ou yarn
-* Angular CLI 20.x
+### Upload e Processamento
 
-## ▶ Como executar (desenvolvimento)
+* Upload de arquivos individuais até 25MB
+* Barra de progresso e validações por tipo
+* Exibição de status: pendente, processando, concluído ou erro
+* Atualização automática de status após processamento
 
-```bash
-git clone https://github.com/LLMontreal/llmontreal-frontend.git
-cd llmontreal-frontend
-npm install
-```
+### Interação com IA
 
-Configure o ambiente em `src/environments/`:
+* Exibição do resumo gerado pela IA local
+* Chat de perguntas e respostas baseado no documento
+* Histórico simples de mensagens
 
-```ts
-export const environment = {
-  production: false,
-  apiBaseUrl: 'http://localhost:3000/api'
-};
-```
+### Interface
 
-Inicie:
+* Layout responsivo para desktop, tablet e mobile
+* Tema claro e escuro com persistência local
+* Feedback visual consistente para erros e operações
 
-```bash
-ng serve
-# ou
-npm start
-```
+### Desenvolvimento e Testes
 
-Acesse: [http://localhost:4200/](http://localhost:4200/)
+* Testes unitários em todos os componentes e serviços
+* Desenvolvimento orientado a testes (TDD)
 
-## 📦 Build de produção
+---
 
-```bash
-ng build --configuration production
-```
-
-Arquivos gerados em: `dist/llmontreal-frontend/`.
-
-## 🧪 Testes
-
-```bash
-ng test       # unitários
-ng e2e        # se houver testes e2e configurados
-```
-
-## 📁 Estrutura (resumo)
+## Estrutura do Projeto
 
 ```
 src/
-  app/          componentes, serviços, rotas
-  assets/
-  environments/
-angular.json
-package.json
+ ├── app/
+ │    ├── components/
+ │    │    ├── dashboard/               # Tela principal
+ │    │    ├── doc-summary-chat/        # Chat + resumo
+ │    │    ├── upload-document/         # Upload e validação
+ │    │    ├── header/                  # Cabeçalho e troca de tema
+ │    │    └── footer/                  # Rodapé
+ │    │
+ │    ├── services/
+ │    │    ├── document.service.ts      # Comunicação com API de documentos
+ │    │    ├── chat.service.ts          # Comunicação com API de chat
+ │    │    ├── theme.service.ts         # Controle de tema
+ │    │    └── logs.service.ts          # Registro simples de logs no frontend
+ │    │
+ │    ├── models/
+ │    │    ├── document.model.ts
+ │    │    └── document-upload-response.model.ts
+ │    │
+ │    ├── shared/                       # Estruturas reutilizáveis
+ │
+ │    ├── app.component.ts
+ │    ├── app.routes.ts
+ │    ├── app.config.ts
+ │    └── app.spec.ts
+ │
+ ├── assets/
+ ├── environments/
+ └── styles.scss
 ```
 
-## ⚙ Variáveis de ambiente
+---
 
-Arquivos:
+## Pré-requisitos
 
-* `environment.ts` (dev)
-* `environment.prod.ts` (prod)
+Certifique-se de ter instalado:
 
-Principais chaves:
+* Node.js 18 ou superior
+* Angular CLI 17 ou superior
+* Navegador moderno
 
-* `apiBaseUrl`
-* Outras integrações (Sentry, Maps, etc)
+---
 
-> Evite commitar credenciais.
+## Configuração do Ambiente
 
-## 🐳 Deploy com Docker (exemplo)
+### 1. Clone o Repositório
 
-```dockerfile
-FROM node:18 AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build -- --configuration=production
-
-FROM nginx:stable-alpine
-COPY --from=build /app/dist/llmontreal-frontend /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx","-g","daemon off;"]
+```
+git clone git@github.com:ro77en/llmontreal-frontend.git
+cd llmontreal-frontend
 ```
 
-Build/run:
+### 2. Instale as Dependências
 
-```bash
-docker build -t llmontreal-frontend .
-docker run -p 8080:80 llmontreal-frontend
+```
+npm install
 ```
 
-## 🛠 Problemas comuns
+### 3. Configure a URL da API
 
-* **Erro em dependências**: remover `node_modules` e rodar `npm ci`.
-* **CORS**: configure no backend ou use `proxy.conf.json`.
-* **Porta ocupada**: `ng serve --port 4300`.
+No arquivo:
 
-## 🤝 Contribuição
+```
+src/environments/environment.ts
+```
 
-1. Abra uma issue
-2. Crie um branch (`feature/...` ou `fix/...`)
-3. Faça PR explicando a alteração
+Ajuste:
 
-## 📫 Contato
+```ts
+apiUrl: 'http://localhost:8080'
+```
 
-Equipe LLMontreal — abra uma issue para dúvidas.
+---
+
+## Executando a Aplicação
+
+### Desenvolvimento
+
+```
+ng serve
+```
+
+Acesse:
+
+```
+http://localhost:4200
+```
+
+### Build de Produção
+
+```
+ng build
+```
+
+---
+
+## Comunicação com a API
+
+O frontend consome os seguintes endpoints:
+
+### Documentos
+
+* POST /documents
+* GET /documents/{id}/summary
+* GET /documents/{id}/content
+
+### Chat
+
+* POST /chat/{documentId}
+
+Os serviços `DocumentService` e `ChatService` encapsulam todas as chamadas HTTP.
+
+---
+
+## Testes (TDD com Jasmine)
+
+### Executar todos os testes
+
+```
+npm test
+```
+
+### Estrutura de testes
+
+* Cada componente possui seu arquivo `.spec.ts`
+* Testes com mocks de HttpClient
+* Testes de template, serviços e modelos
+* TDD aplicado durante o desenvolvimento dos componentes principais
+
+---
+
+## Responsividade
+
+A aplicação utiliza:
+
+* Layouts baseados em grid para páginas principais
+* Flexbox para elementos internos
+* Breakpoints otimizados para mobile, tablet e desktop
+* Tipografia fluida com unidades relativas
+
+Todos os componentes se ajustam automaticamente mantendo usabilidade em qualquer resolução.
+
+---
+
+## Tema Claro e Escuro
+
+O tema é controlado por:
+
+* `ThemeService`
+* CSS custom properties
+* Persistência via `localStorage`
+* Alternância direta pelo `HeaderComponent`
+
+O layout inteiro se adapta sem recarregar a página.
+
+---
+
+## Logs e Monitoramento
+
+O frontend inclui:
+
+* Logs básicos de ações do usuário (via `LogsService`)
+* Console warnings para erros HTTP
+* Feedback visual de falhas de upload e comunicação
+
+---
+
+## Contribuindo
+
+1. Faça um fork do projeto
+2. Crie sua branch (feature/nome-da-feature)
+3. Commit suas mudanças
+4. Envie para o repositório remoto
+5. Abra um Pull Request
+
+---
+
+## Licença
+
+Este projeto foi desenvolvido durante o programa Acelera Maker da Montreal.
