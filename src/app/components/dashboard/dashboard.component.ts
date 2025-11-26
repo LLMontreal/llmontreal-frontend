@@ -138,4 +138,8 @@ export class DashboardComponent implements OnInit {
     this.size = event.pageSize;
     this.fetchDocuments();
   }
+
+  isChatAvailable(status:string) : boolean {
+    return status == 'COMPLETED';
+  }
 }

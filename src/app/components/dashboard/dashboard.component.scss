@@ -230,6 +230,13 @@ button.primary-btn {
   color: var(--color-primary);
 }
 
+.action-link.disabled {
+  pointer-events: none; 
+  opacity: 0.5; 
+  cursor: not-allowed;
+  color: #9e9e9e; 
+}
+
 .paginator-spacing, .paginator-wrapper {
   margin: 0;
   padding: 0;
