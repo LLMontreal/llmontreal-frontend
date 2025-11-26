@@ -4,6 +4,7 @@ import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ThemeService } from '../../services/theme.service';
+import { AuthService } from '../../services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { DocumentService } from '../../services/document.service';
@@ -24,6 +25,7 @@ export class HeaderComponent implements OnInit {
   private router = inject(Router); 
 
   private themeService = inject(ThemeService);
+  private authService = inject(AuthService);
   private documentService = inject(DocumentService);
   isDark: Signal<boolean> = computed(() => this.themeService.theme() === 'dark');
 
@@ -45,5 +47,9 @@ export class HeaderComponent implements OnInit {
   
   toggleTheme() {
     this.themeService.toggleTheme();
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

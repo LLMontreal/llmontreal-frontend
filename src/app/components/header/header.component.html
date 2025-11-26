@@ -23,8 +23,16 @@
         <mat-icon>menu</mat-icon>
       </button>
 
+      <button class="logs-button" routerLink="/logs" aria-label="Acessar página de logs">
+        <i class="fas fa-file-alt"></i>
+      </button>
+
         <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDark() ? 'Ativar modo claro' : 'Ativar modo escuro'">
       <i class="fas" [ngClass]="isDark() ? 'fa-sun' : 'fa-moon'"></i>
+    </button>
+
+    <button class="logout-button" (click)="logout()" aria-label="Sair">
+      <i class="fas fa-sign-out-alt"></i>
     </button>
     </div>
 </header>

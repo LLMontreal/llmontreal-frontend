@@ -1,0 +1,36 @@
+<h2>Download de Logs</h2>
+<p class="subtitle">
+  Faça o download dos logs do sistema para análise e monitoramento
+</p>
+
+<div class="download-container">
+  <div class="download-card">
+    <i class="fas fa-file-download download-icon"></i>
+    <h3>Logs da API</h3>
+    <p class="description">
+      Baixe todos os logs de requisições e eventos do sistema.
+      Você será redirecionado para fazer login caso necessário.
+    </p>
+    <button class="btn-primary" (click)="downloadLogs()">
+      <i class="fas fa-download"></i>
+      Download dos Logs
+    </button>
+  </div>
+
+  <div class="info-section">
+    <div class="info-item">
+      <i class="fas fa-info-circle"></i>
+      <div class="info-text">
+        <strong>Formato:</strong>
+        <span>CSV (Comma-Separated Values)</span>
+      </div>
+    </div>
+    <div class="info-item">
+      <i class="fas fa-lock"></i>
+      <div class="info-text">
+        <strong>Segurança:</strong>
+        <span>Acesso restrito - autenticação necessária</span>
+      </div>
+    </div>
+  </div>
+</div>

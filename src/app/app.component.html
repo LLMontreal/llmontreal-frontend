@@ -1,7 +1,7 @@
-<app-header></app-header>
+<app-header *ngIf="showHeaderFooter$ | async"></app-header>
 
 <main class="app-content">
   <router-outlet></router-outlet>
 </main>
 
-<app-footer></app-footer>
+<app-footer *ngIf="showHeaderFooter$ | async"></app-footer>
