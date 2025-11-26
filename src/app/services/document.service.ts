@@ -17,7 +17,7 @@ import { DocumentUploadResponse } from '../models/document-upload-response.model
 export class DocumentService {
   private apiUrl = `${environment.apiUrl}/documents`;
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
+  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
   getDocuments(
     page: number,
@@ -33,13 +33,11 @@ export class DocumentService {
 
     if (status) params = params.set('status', status);
 
-    return this.http
-      .get<Page<DocumentDTO>>(this.apiUrl, { params })
-      .pipe(
-        catchError((err) =>
-          this.handleError('Não foi possível carregar os documentos.', err)
-        )
-      );
+    return this.http.get<Page<DocumentDTO>>(this.apiUrl, { params }).pipe(
+      catchError((err) =>
+        this.handleError('Não foi possível carregar os documentos.', err)
+      )
+    );
   }
 
   uploadDocument(file: File): Observable<HttpEvent<DocumentUploadResponse>> {
@@ -52,20 +50,18 @@ export class DocumentService {
         observe: 'events',
       })
       .pipe(
-        catchError((err) =>
-          this.handleError('Erro ao enviar o documento.', err)
-        )
+        catchError((err) => {
+          return throwError(() => err);
+        })
       );
   }
 
   getDocumentById(id: number): Observable<DocumentDTO> {
-    return this.http
-      .get<DocumentDTO>(`${this.apiUrl}/${id}`)
-      .pipe(
-        catchError((err) =>
-          this.handleError('Erro ao buscar o documento.', err)
-        )
-      );
+    return this.http.get<DocumentDTO>(`${this.apiUrl}/${id}`).pipe(
+      catchError((err) =>
+        this.handleError('Erro ao buscar o documento.', err)
+      )
+    );
   }
 
   private handleError(userMessage: string, error: HttpErrorResponse) {
@@ -83,9 +79,7 @@ export class DocumentService {
           this.showSnack('Documento não encontrado.');
           break;
         case 500:
-          this.showSnack(
-            'Erro interno do servidor. Tente novamente mais tarde.'
-          );
+          this.showSnack('Erro interno do servidor. Tente novamente mais tarde.');
           break;
         default:
           this.showSnack(userMessage);
@@ -93,6 +87,7 @@ export class DocumentService {
 
       technicalMessage = `HTTP ${error.status} — ${error.message}`;
     }
+
     return throwError(() => error);
   }
 
