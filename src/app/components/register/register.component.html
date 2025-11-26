@@ -10,19 +10,19 @@
 
     <form class="auth-form" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="name" class="form-label">Nome completo</label>
+        <label for="username" class="form-label">Nome de usuário</label>
         <div class="input-wrapper">
           <span class="material-icons input-icon">person</span>
           <input
             type="text"
-            id="name"
-            name="name"
+            id="username"
+            name="username"
             class="form-input"
-            placeholder="Seu nome"
-            [(ngModel)]="name"
+            placeholder="Seu nome de usuário"
+            [(ngModel)]="username"
             [disabled]="isLoading"
             required
-            autocomplete="name"
+            autocomplete="username"
           >
         </div>
       </div>

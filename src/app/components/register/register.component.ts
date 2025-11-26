@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  name: string = '';
+  username: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
@@ -24,10 +24,10 @@ export class RegisterComponent {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   onSubmit(): void {
-    if (!this.name || !this.email || !this.password || !this.confirmPassword) {
+    if (!this.username || !this.email || !this.password || !this.confirmPassword) {
       this.errorMessage = 'Por favor, preencha todos os campos';
       return;
     }
@@ -37,15 +37,15 @@ export class RegisterComponent {
       return;
     }
 
-    if (this.password.length < 6) {
-      this.errorMessage = 'A senha deve ter pelo menos 6 caracteres';
+    if (!this.isPasswordStrong(this.password)) {
+      this.errorMessage = 'A senha deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número';
       return;
     }
 
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.register(this.name, this.email, this.password).subscribe({
+    this.authService.register(this.username, this.email, this.password).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
       },
@@ -57,6 +57,12 @@ export class RegisterComponent {
         this.isLoading = false;
       }
     });
+  }
+
+  isPasswordStrong(password: string): boolean {
+    // Pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return passwordRegex.test(password);
   }
 
   togglePasswordVisibility(): void {
