@@ -120,6 +120,15 @@ button.primary-btn {
   color: #6B7280;
 }
 
+.table-th:nth-child(2),
+
+.table-th:nth-child(4),
+.table-th:last-child,
+
+.table-td:nth-child(4),
+.table-td:last-child {
+  text-align: center;
+}
 :host-context(body.dark) .table-th {
   color: #9CA3AF;
 }
