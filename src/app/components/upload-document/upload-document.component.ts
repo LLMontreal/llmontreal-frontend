@@ -1,18 +1,11 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { HttpEventType } from '@angular/common/http';
 import { DocumentService } from '../../services/document.service';
 import { Router } from '@angular/router';
 
-
-type Status =
-  | 'IDLE'
-  | 'READY'
-  | 'UPLOADING'
-  | 'SUCCESS'
-  | 'ERROR'
-  | 'CANCELLED';
+type Status = 'IDLE' | 'READY' | 'UPLOADING' | 'SUCCESS' | 'ERROR' | 'CANCELLED';
 
 @Component({
   selector: 'app-upload-document',
@@ -27,7 +20,6 @@ export class UploadDocumentComponent implements OnDestroy {
   status: Status = 'IDLE';
   statusMessage = 'Nenhum arquivo selecionado.';
   uploadSub?: Subscription;
-
   isDragging = false;
 
   private allowedMimeTypes = [
@@ -41,7 +33,9 @@ export class UploadDocumentComponent implements OnDestroy {
     'multipart/x-zip',
     'application/x-compressed',
   ];
-  private maxSizeBytes = 25 * 1024 * 1024; // 25MB
+
+  private maxSizeBytes = 25 * 1024 * 1024;
+
   private allowedExtensions = [
     'pdf',
     'docx',
@@ -52,7 +46,10 @@ export class UploadDocumentComponent implements OnDestroy {
     'zip',
   ];
 
-  constructor(private documentService: DocumentService, private router: Router) {}
+  constructor(
+    private documentService: DocumentService,
+    private router: Router
+  ) {}
 
   @HostListener('window:dragover', ['$event'])
   onWindowDragOver(evt: DragEvent) {
@@ -101,21 +98,24 @@ export class UploadDocumentComponent implements OnDestroy {
 
     if (!mimeOk || !extOk) {
       this.setError(
-        `Tipo de arquivo inválido. (Permitidos: PDF, DOCX, PNG, JPG, TXT, ZIP)`
+        'Tipo de arquivo inválido. (Permitidos: PDF, DOCX, PNG, JPG, TXT, ZIP)'
       );
       return;
     }
 
     if (file.size > this.maxSizeBytes) {
-      this.setError(`O arquivo ultrapassa o limite de 25MB.`);
+      this.setError('O arquivo ultrapassa o limite de 25MB.');
       return;
     }
+
     this.selectedFile = file;
     this.status = 'READY';
     this.statusMessage = 'Arquivo pronto para envio.';
     this.progress = 0;
+
     this.uploadFile();
   }
+
   uploadFile() {
     if (!this.selectedFile) return;
 
@@ -135,15 +135,30 @@ export class UploadDocumentComponent implements OnDestroy {
             this.statusMessage = 'Upload concluído com sucesso!';
             this.progress = 100;
             this.selectedFile = undefined;
-            console.log('Resposta do backend:', event.body);
-
           }
         },
         error: (err) => {
-          console.error(err);
-          const backendMsg =
-            err.error?.message || 'Ocorreu um erro ao enviar o arquivo.';
-          this.setError(backendMsg);
+          let backendMsg: string =
+            err.error?.errorMessage ||
+            err.error?.message ||
+            err.error ||
+            '';
+
+          backendMsg = String(backendMsg);
+          const decoded = this.decodeHtml(backendMsg);
+
+          if (
+            decoded.includes(
+              'Nenhum conteúdo pôde ser extraído do documento'
+            )
+          ) {
+            this.setError(
+              'Erro ao processar documento: Nenhum conteúdo pôde ser extraído do documento.'
+            );
+            return;
+          }
+
+          this.setError(decoded || 'Ocorreu um erro ao enviar o arquivo.');
         },
       });
   }
@@ -167,18 +182,25 @@ export class UploadDocumentComponent implements OnDestroy {
     this.progress = 0;
     this.selectedFile = undefined;
   }
+
   ngOnDestroy(): void {
     this.uploadSub?.unsubscribe();
   }
+
   goToDashboard() {
-  this.router.navigate(['/dashboard']);
-}
+    this.router.navigate(['/dashboard']);
+  }
 
-resetUpload() {
-  this.status = 'IDLE';
-  this.statusMessage = 'Nenhum arquivo selecionado.';
-  this.selectedFile = undefined;
-  this.progress = 0;
-}
+  resetUpload() {
+    this.status = 'IDLE';
+    this.statusMessage = 'Nenhum arquivo selecionado.';
+    this.selectedFile = undefined;
+    this.progress = 0;
+  }
 
+  private decodeHtml(html: string): string {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+  }
 }
