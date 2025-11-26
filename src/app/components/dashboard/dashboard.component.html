@@ -1,4 +1,4 @@
-  <div class="container">
+<div class="container">
     <div class="layout-between header-row">
       <h1>Dashboard de Documentos</h1>
      
@@ -94,7 +94,13 @@
               </td>
 
               <td class="table-td">
-                <a class="action-link" [routerLink]="['/chat', document.id]" aria-label="Abrir chat" title="Abrir chat">
+                <a
+                  class="action-link"
+                  [routerLink]="isChatAvailable(document.status) ? ['/chat', document.id] : null"
+                  [class.disabled]="!isChatAvailable(document.status)"
+                  aria-label="Abrir chat"
+                  [title]="isChatAvailable(document.status) ? 'Abrir chat' : 'Chat disponível apenas para documentos prontos'"
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="icon-chat">
                     <path
                       d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
@@ -112,3 +118,4 @@
       (page)="onPageChange($event)">
     </mat-paginator>
   </div>
+</div>
